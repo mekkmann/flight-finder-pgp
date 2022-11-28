@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-
-//test file read
 using FlightFinderApi.Models.Flight;
 using System.Text.Json;
 
@@ -13,28 +11,76 @@ public class FlightsController : ControllerBase
     [HttpPost("/bookings")]
     public IActionResult CreateBooking()
     {
-        return Ok();
+        return Ok("PHBooked!");
     }
-    // get all flights
-    [HttpGet("/flights")]
-    public async Task<IActionResult> GetAllFlights()
+
+    // get all flights (mostly for testing)
+    // [HttpGet("/flights")]
+    // public async Task<IActionResult> GetAllFlights()
+    // {
+    //     List<Flight> flights = new();
+
+    //     using (StreamReader r = new StreamReader("Data\\data.json"))
+    //     {
+    //         string json = await r.ReadToEndAsync();
+    //         if (string.IsNullOrWhiteSpace(json))
+    //         {
+    //             return StatusCode(500); // internal server error
+    //         }
+
+    //         flights = JsonSerializer.Deserialize<List<Flight>>(json);
+    //     }
+
+    //     return Ok(flights);
+    // }
+    // get flights by search criteria
+    [HttpGet("/flights/search")]
+    public async Task<IActionResult> GetAllFlightsBySearchCriteria(
+        string? departureLocation = null,
+        DateTime? departureDate = null,
+        DateTime? arrivalDate = null,
+        DateTime? returnDate = null,
+        string? arrivalDestination = null,
+        bool roundTrip = true,
+        int adults = 1,
+        int children = 0)
     {
+        // enforce invariants
+        if (adults <= 0 || children < 0) return BadRequest("Amount of adults/children can't be negative");
+
+
+        var fakedJson = "";
         List<Flight> flights = new();
 
-        using (StreamReader r = new StreamReader("Data\\data.json"))
+
+        // below gets all flights if no location/departure data is provided
+        if (departureDate == null &&
+            arrivalDate == null &&
+            string.IsNullOrWhiteSpace(departureLocation) &&
+            string.IsNullOrWhiteSpace(arrivalDestination))
         {
-            string json = await r.ReadToEndAsync();
-            flights = JsonSerializer.Deserialize<List<Flight>>(json);
+            using (StreamReader r = new StreamReader("Data\\data.json"))
+            {
+                fakedJson = await r.ReadToEndAsync();
+                if (string.IsNullOrWhiteSpace(fakedJson))
+                {
+                    return StatusCode(500); // internal server error
+                }
+
+            }
+            flights = JsonSerializer.Deserialize<List<Flight>>(fakedJson);
         }
 
         return Ok(flights);
     }
-    // get flights by search criteria
 
     // MAYBE: get singular flight
-    [HttpGet("/flights/{id}")]
-    public IActionResult GetFlight(string id)
-    {
-        return Ok(id);
-    }
+    // [HttpGet("/flights/{id}")]
+    // public IActionResult GetFlight(string id)
+    // {
+    //     return Ok(id);
+    // }
+
+    // HELPER METHODS
+
 }

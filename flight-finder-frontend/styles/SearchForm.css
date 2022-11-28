@@ -1,0 +1,25 @@
+.searchForm {
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.searchForm_misc {
+    display: flex;
+    flex-direction: row;
+}
+.searchForm_misc-people {
+    flex-direction: column;
+    display: flex;
+    width: 50%;
+}
+.searchForm_misc-flight {
+    flex-direction: column;
+    display: flex;
+    width: 50%;
+
+}
+
+
