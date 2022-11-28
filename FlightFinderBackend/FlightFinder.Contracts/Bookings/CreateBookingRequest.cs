@@ -1,0 +1,1 @@
+namespace FlightFinder.Contracts.Bookings;
