@@ -46,32 +46,31 @@ public class FlightsController : ControllerBase
         int children = 0)
     {
         // enforce invariants
-        if (adults <= 0 || children < 0) return BadRequest("Amount of adults/children can't be negative");
+        if (adults <= 0 || children < 0) return BadRequest("Amount of adults must be 1+ and children can't be negative");
 
+        List<Flight> allFLights = new();
 
-        var fakedJson = "";
-        List<Flight> flights = new();
-
-
-        // below gets all flights if no location/departure data is provided
-        if (departureDate == null &&
-            arrivalDate == null &&
-            string.IsNullOrWhiteSpace(departureLocation) &&
-            string.IsNullOrWhiteSpace(arrivalDestination))
+        using (StreamReader r = new StreamReader("Data\\data.json"))
         {
-            using (StreamReader r = new StreamReader("Data\\data.json"))
+            var json = await r.ReadToEndAsync();
+            if (string.IsNullOrWhiteSpace(json))
             {
-                fakedJson = await r.ReadToEndAsync();
-                if (string.IsNullOrWhiteSpace(fakedJson))
-                {
-                    return StatusCode(500); // internal server error
-                }
-
+                return StatusCode(500); // internal server error
             }
-            flights = JsonSerializer.Deserialize<List<Flight>>(fakedJson);
+            allFLights = JsonSerializer.Deserialize<List<Flight>>(json);
         }
 
-        return Ok(flights);
+
+        // if departureLocation and arrivalDestination is specified, filter flights based on that
+        if (allFLights != null && !string.IsNullOrWhiteSpace(departureLocation) &&
+            !string.IsNullOrWhiteSpace(arrivalDestination))
+        {
+            var filteredList = allFLights.Where(x => x.DepartureDestination == departureLocation &&
+                                                  x.ArrivalDestination == arrivalDestination).ToList();
+            return Ok(filteredList);
+        }
+        return Ok(allFLights);
+
     }
 
     // MAYBE: get singular flight

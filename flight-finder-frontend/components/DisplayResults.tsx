@@ -41,8 +41,9 @@ const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
       <h2>Search Results: </h2>
       <button onClick={consoleFlight}>Console Log all flights</button>
       <ul>
-        <li>hello</li>
-        <li>bye</li>
+        {flights.map((flight, idx) => {
+          return <li key={idx}>ph</li>;
+        })}
       </ul>
     </>
   );
