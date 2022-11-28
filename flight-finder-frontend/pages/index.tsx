@@ -22,7 +22,10 @@ export default function Home() {
         <h1>Landing Page</h1>
 
         <SearchForm />
-        <DisplayResults url={"https://localhost:7283/flights/search"} />
+        <DisplayResults
+          urlToFetch={"https://localhost:7283/flights/search"}
+          roundTrip={false}
+        />
       </main>
 
       <footer className={styles.footer}></footer>

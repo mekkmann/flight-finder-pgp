@@ -4,6 +4,8 @@ import Link from "next/link";
 // TODO: define type traveller
 
 function SearchForm() {
+  const [departureDate, setDepartureDate] = useState<Date>(new Date());
+  const [returnDate, setReturnDate] = useState<Date>(new Date());
   const [travellers, setTravellers] = useState([{ name: "john" }]); //TODO: add type to usestate
 
   function handleSearch(e: React.FormEvent<HTMLFormElement>) {
@@ -22,9 +24,9 @@ function SearchForm() {
       </div>
       <div className="searchForm_dates">
         <label htmlFor="outboundFlight">Outbound flight: </label>
-        <input type="text" name="outboundFlight" id="outboundFlight" />
+        <input type="date" name="outboundFlight" id="outboundFlight" />
         <label htmlFor="returnFlight">Return flight: </label>
-        <input type="text" name="returnFlight" id="returnFlight" />
+        <input type="date" name="returnFlight" id="returnFlight" />
       </div>
       <div className="searchForm_misc">
         <div className="searchForm_misc-people">

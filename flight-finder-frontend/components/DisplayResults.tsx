@@ -4,7 +4,8 @@ import Link from "next/link";
 // TODO: define type flight
 
 interface IMyProps {
-  url: string;
+  urlToFetch: string;
+  roundTrip: boolean;
 }
 
 const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
@@ -17,7 +18,7 @@ const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(props.url)
+    fetch(props.urlToFetch)
       .then((res) => res.json())
       .then((data) => {
         setFlights(data);
@@ -40,11 +41,13 @@ const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
     <>
       <h2>Search Results: </h2>
       <button onClick={consoleFlight}>Console Log all flights</button>
+      <h3>Outbound from {"PHdeparturelocation"}</h3>
       <ul>
         {flights.map((flight, idx) => {
           return <li key={idx}>ph</li>;
         })}
       </ul>
+      {props.roundTrip ? <p>roundtrip</p> : <></>}
     </>
   );
 };
