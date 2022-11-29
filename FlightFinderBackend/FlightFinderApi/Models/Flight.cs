@@ -1,7 +1,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace FlightFinderApi.Models.Flight;
+namespace FlightFinderApi.Models;
 
 public class Flight
 {
@@ -15,4 +15,6 @@ public class Flight
 
     [JsonPropertyName("itineraries")]
     public IList<Itinerary> Itineraries { get; set; }
+
+
 }

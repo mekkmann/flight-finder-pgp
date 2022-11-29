@@ -1,12 +1,13 @@
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
 
 import Navbar from "../components/Navbar";
 import SearchForm from "../components/SearchForm";
 import DisplayResults from "../components/DisplayResults";
+import React, { useState } from "react";
 
 export default function Home() {
+  const [urlToFetch, setUrlToFetch] = useState<string>("");
   return (
     <div className={styles.container}>
       <Head>
@@ -19,13 +20,11 @@ export default function Home() {
       </Head>
       <Navbar />
       <main className={styles.main}>
-        <h1>Landing Page</h1>
-
-        <SearchForm />
-        <DisplayResults
-          urlToFetch={"https://localhost:7283/flights/search"}
-          roundTrip={false}
-        />
+        <SearchForm setUrlFunc={setUrlToFetch} />
+        <br />
+        <hr style={{ width: "100%" }} />
+        <br />
+        <DisplayResults urlToFetch={urlToFetch} />
       </main>
 
       <footer className={styles.footer}></footer>

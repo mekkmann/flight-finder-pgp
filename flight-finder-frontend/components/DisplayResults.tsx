@@ -5,7 +5,6 @@ import Link from "next/link";
 
 interface IMyProps {
   urlToFetch: string;
-  roundTrip: boolean;
 }
 
 const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
@@ -17,6 +16,7 @@ const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
   }
 
   useEffect(() => {
+    console.log(props.urlToFetch);
     setLoading(true);
     fetch(props.urlToFetch)
       .then((res) => res.json())
@@ -25,16 +25,13 @@ const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
         setLoading(false);
       })
       .catch((e) => console.log(e.message));
-  }, []);
+  }, [props.urlToFetch]);
 
-  if (isLoading) return <p>Loading...</p>;
+  // if (isLoading) return <p>Loading...</p>;
 
-  if (!flights)
+  if (flights.length == 0)
     return (
-      <p>
-        We couldn't find any random flights at the moment. Please try again
-        later!
-      </p>
+      <p>We couldn't find any flights at the moment. Please try again later!</p>
     );
 
   return (
@@ -42,12 +39,6 @@ const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
       <h2>Search Results: </h2>
       <button onClick={consoleFlight}>Console Log all flights</button>
       <h3>Outbound from {"PHdeparturelocation"}</h3>
-      <ul>
-        {flights.map((flight, idx) => {
-          return <li key={idx}>ph</li>;
-        })}
-      </ul>
-      {props.roundTrip ? <p>roundtrip</p> : <></>}
     </>
   );
 };

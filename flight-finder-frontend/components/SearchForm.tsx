@@ -1,62 +1,167 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
-// TODO: define type traveller
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-function SearchForm() {
+interface IMyProps {
+  setUrlFunc: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const SearchForm = (props: IMyProps) => {
+  const baseUrl: string = "https://localhost:7283/flights/search?";
+  const phReturnDate = new Date();
+  phReturnDate.setDate(phReturnDate.getDate() + 5);
+
   const [departureDate, setDepartureDate] = useState<Date>(new Date());
-  const [returnDate, setReturnDate] = useState<Date>(new Date());
-  const [travellers, setTravellers] = useState([{ name: "john" }]); //TODO: add type to usestate
+  const [returnDate, setReturnDate] = useState<Date>(phReturnDate);
+  const [roundTrip, setRoundTrip] = useState<boolean>(true);
+  const [direct, setDirect] = useState<boolean>(false);
+  const [departureLocation, setDepartureLocation] = useState<string>("");
+  const [arrivalDestination, setArrivalDestination] = useState<string>("");
+  const [numOfAdults, setNumOfAdults] = useState<number>(1);
+  const [numOfChildren, setNumOfChildren] = useState<number>(0);
 
-  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
-    //TODO: Implement search
-    e.preventDefault();
+  const handleDepartureLocation = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDepartureLocation(e.target.value);
+  };
+  const handleArrivalDestination = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setArrivalDestination(e.target.value);
+  };
 
-    console.log("searching....");
+  function handleGetSearchUrl() {
+    const url =
+      baseUrl +
+      "departureLocation=" +
+      departureLocation +
+      "&arrivalDestination=" +
+      arrivalDestination +
+      "&roundTrip=" +
+      roundTrip +
+      "&adults=" +
+      numOfAdults +
+      "&children=" +
+      numOfChildren +
+      "&departureDate=" +
+      departureDate.toISOString().split("T")[0] +
+      "&returnDate=" +
+      returnDate.toISOString().split("T")[0] +
+      "&direct=" +
+      direct;
+
+    props.setUrlFunc(url);
   }
   return (
-    <form onSubmit={(e) => handleSearch(e)} className="searchForm">
+    <div className="searchForm">
       <div className="searchForm_locations">
         <label htmlFor="departureLocation">From: </label>
-        <input type="text" name="departureLocation" id="departureLocation" />
+        <input
+          type="text"
+          name="departureLocation"
+          id="departureLocation"
+          onChange={(e) => handleDepartureLocation(e)}
+        />
         <label htmlFor="arrivalDestination">To: </label>
-        <input type="text" name="arrivalDestination" id="arrivalDestination" />
+        <input
+          type="text"
+          name="arrivalDestination"
+          id="arrivalDestination"
+          onChange={(e) => handleArrivalDestination(e)}
+        />
       </div>
       <div className="searchForm_dates">
         <label htmlFor="outboundFlight">Outbound flight: </label>
-        <input type="date" name="outboundFlight" id="outboundFlight" />
-        <label htmlFor="returnFlight">Return flight: </label>
-        <input type="date" name="returnFlight" id="returnFlight" />
+        <DatePicker
+          selected={departureDate}
+          onChange={(date: Date) => setDepartureDate(date)}
+          id="outboundFlight"
+        />
+        {roundTrip ? (
+          <>
+            <label htmlFor="returnFlight">Return flight: </label>
+            <DatePicker
+              selected={returnDate}
+              onChange={(date: Date) => setReturnDate(date)}
+              id="returnFlight"
+            />
+          </>
+        ) : (
+          <></>
+        )}
       </div>
       <div className="searchForm_misc">
         <div className="searchForm_misc-people">
-          <label htmlFor="adultTravelers">Adults: </label>
-          <input
-            type="number"
-            name="adultTravelers"
-            id="adultTravelers"
-            min="0"
-            max="25"
-          />
-          <label htmlFor="childTravelers">Children: </label>
-          <input
-            type="number"
-            name="childTravelers"
-            id="childTravelers"
-            min="0"
-            max="25"
-          />
+          <p>Adults: {numOfAdults}</p>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setNumOfAdults(numOfAdults + 1);
+            }}
+          >
+            +
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              if (numOfAdults >= 2) {
+                setNumOfAdults(numOfAdults - 1);
+              }
+            }}
+          >
+            -
+          </button>
+          <p>Children: {numOfChildren}</p>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setNumOfChildren(numOfChildren + 1);
+            }}
+          >
+            +
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              if (numOfChildren >= 1) {
+                setNumOfChildren(numOfChildren - 1);
+              }
+            }}
+          >
+            -
+          </button>
         </div>
         <div className="searchForm_misc-flight">
           <label htmlFor="roundTrip">Round trip: </label>
-          <input type="checkbox" name="roundTrip" id="roundTrip" />
+          <input
+            type="checkbox"
+            name="roundTrip"
+            id="roundTrip"
+            checked={roundTrip}
+            onChange={(e) => {
+              setRoundTrip(!roundTrip);
+            }}
+          />
           <label htmlFor="direct">Direct: </label>
-          <input type="checkbox" name="direct" id="direct" />
+          <input
+            type="checkbox"
+            name="direct"
+            id="direct"
+            onChange={(e) => {
+              setDirect(!direct);
+            }}
+          />
         </div>
       </div>
-      <button type="submit">Search Flights</button>
-    </form>
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          handleGetSearchUrl();
+        }}
+      >
+        Search Flights
+      </button>
+    </div>
   );
-}
+};
 
 export default SearchForm;

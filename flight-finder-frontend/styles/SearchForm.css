@@ -1,11 +1,16 @@
 .searchForm {
+    margin-top: 5vh;
     border: 2px solid black;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    background-color: aqua;
 }
 
-
+.searchForm_dates {
+    display: flex;
+}
 .searchForm_misc {
     display: flex;
     flex-direction: row;

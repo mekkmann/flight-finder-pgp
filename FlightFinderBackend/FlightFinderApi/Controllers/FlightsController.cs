@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using FlightFinderApi.Models.Flight;
+using FlightFinderApi.Models;
+using FlightFinderApi.Models.DTO;
 using System.Text.Json;
 
 namespace FlightFinderApi.Controllers.FlightsController;
@@ -11,44 +12,27 @@ public class FlightsController : ControllerBase
     [HttpPost("/bookings")]
     public IActionResult CreateBooking()
     {
+        // TODO: Implement "booking"
         return Ok("PHBooked!");
     }
 
-    // get all flights (mostly for testing)
-    // [HttpGet("/flights")]
-    // public async Task<IActionResult> GetAllFlights()
-    // {
-    //     List<Flight> flights = new();
-
-    //     using (StreamReader r = new StreamReader("Data\\data.json"))
-    //     {
-    //         string json = await r.ReadToEndAsync();
-    //         if (string.IsNullOrWhiteSpace(json))
-    //         {
-    //             return StatusCode(500); // internal server error
-    //         }
-
-    //         flights = JsonSerializer.Deserialize<List<Flight>>(json);
-    //     }
-
-    //     return Ok(flights);
-    // }
     // get flights by search criteria
     [HttpGet("/flights/search")]
     public async Task<IActionResult> GetAllFlightsBySearchCriteria(
         string? departureLocation = null,
-        DateTime? departureDate = null,
-        DateTime? arrivalDate = null,
-        DateTime? returnDate = null,
+        string? departureDate = null,
+        string? arrivalDate = null,
+        string? returnDate = null,
         string? arrivalDestination = null,
         bool roundTrip = true,
         int adults = 1,
-        int children = 0)
+        int children = 0,
+        bool direct = false)
     {
         // enforce invariants
         if (adults <= 0 || children < 0) return BadRequest("Amount of adults must be 1+ and children can't be negative");
 
-        List<Flight> allFLights = new();
+        List<Flight> allFlights = new();
 
         using (StreamReader r = new StreamReader("Data\\data.json"))
         {
@@ -57,19 +41,45 @@ public class FlightsController : ControllerBase
             {
                 return StatusCode(500); // internal server error
             }
-            allFLights = JsonSerializer.Deserialize<List<Flight>>(json);
+            allFlights = JsonSerializer.Deserialize<List<Flight>>(json);
         }
 
+        if (allFlights == null) return StatusCode(500);
 
-        // if departureLocation and arrivalDestination is specified, filter flights based on that
-        if (allFLights != null && !string.IsNullOrWhiteSpace(departureLocation) &&
-            !string.IsNullOrWhiteSpace(arrivalDestination))
+
+        // if !roundTrip, departureLocation and arrivalLocation is specified, filter flights based on that
+        if (!roundTrip && !string.IsNullOrWhiteSpace(departureLocation) && !string.IsNullOrWhiteSpace(arrivalDestination))
         {
-            var filteredList = allFLights.Where(x => x.DepartureDestination == departureLocation &&
-                                                  x.ArrivalDestination == arrivalDestination).ToList();
-            return Ok(filteredList);
+            var locationFiltered = allFlights.Where(x => x.DepartureDestination.ToLower() == departureLocation.ToLower() &&
+                                                         x.ArrivalDestination.ToLower() == arrivalDestination.ToLower()).ToList();
+
+            List<Itinerary> itineraries = new();
+            var flightId = "";
+            var departureDest = "";
+            var arrivalDest = "";
+            foreach (var route in locationFiltered)
+            {
+                flightId = route.FlightId;
+                departureDest = route.DepartureDestination;
+                arrivalDest = route.ArrivalDestination;
+                for (var i = 0; i < route.Itineraries.Count; i++)
+                {
+                    if (route.Itineraries[i].DepartureAt.ToString().Split(" ")[0] == departureDate && route.Itineraries[i].AvailableSeats >= (adults + children))
+                    {
+                        itineraries.Add(route.Itineraries[i]);
+                    }
+                }
+            }
+            OneWayFlightDTO completedFiltering = new(flightId, departureDest, arrivalDest, itineraries);
+            return Ok(completedFiltering);
         }
-        return Ok(allFLights);
+
+
+
+
+
+        // returns all flights if no criteria is met
+        return Ok(allFlights);
 
     }
 
