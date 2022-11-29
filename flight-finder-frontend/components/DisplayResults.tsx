@@ -56,7 +56,7 @@ const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
   return (
     <>
       <button onClick={consoleFlight}>Console Log all flights</button>
-      {flights.map((flight, idx) => (
+      {/* {flights.map((flight, idx) => (
         <>
           <h2 key={flight.flight_id + idx}>
             Outbound from: {flight.departureDestination} | Arrival in:{" "}
@@ -71,7 +71,7 @@ const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
             />
           ))}
         </>
-      ))}
+      ))} */}
     </>
   );
 };

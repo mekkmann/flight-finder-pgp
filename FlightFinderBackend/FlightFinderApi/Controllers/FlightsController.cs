@@ -47,7 +47,7 @@ public class FlightsController : ControllerBase
         if (allFlights == null) return StatusCode(500);
 
 
-        // if !roundTrip, departureLocation and arrivalLocation is specified, filter flights based on that
+        // if !roundTrip
         if (!roundTrip && !string.IsNullOrWhiteSpace(departureLocation) && !string.IsNullOrWhiteSpace(arrivalDestination))
         {
             var locationFiltered = allFlights.Where(x => x.DepartureDestination.ToLower() == departureLocation.ToLower() &&
@@ -74,12 +74,66 @@ public class FlightsController : ControllerBase
             return Ok(completedFiltering);
         }
 
+        // for roundtrip
+        if (roundTrip && !string.IsNullOrWhiteSpace(departureLocation) && !string.IsNullOrWhiteSpace(arrivalDestination))
+        {
+            // for outbound flight
+            var locationFiltered1 = allFlights.Where(x => x.DepartureDestination.ToLower() == departureLocation.ToLower() &&
+                                                         x.ArrivalDestination.ToLower() == arrivalDestination.ToLower()).ToList();
+
+            List<Itinerary> itineraries1 = new();
+
+            var flightId1 = "";
+            var departureDest1 = "";
+            var arrivalDest1 = "";
+            foreach (var route in locationFiltered1)
+            {
+                flightId1 = route.FlightId;
+                departureDest1 = route.DepartureDestination;
+                arrivalDest1 = route.ArrivalDestination;
+                for (var i = 0; i < route.Itineraries.Count; i++)
+                {
+                    if (route.Itineraries[i].DepartureAt.ToString().Split(" ")[0] == departureDate && route.Itineraries[i].AvailableSeats >= (adults + children))
+                    {
+                        itineraries1.Add(route.Itineraries[i]);
+                    }
+                }
+            }
+            OneWayFlightDTO outbound = new(flightId1, departureDest1, arrivalDest1, itineraries1);
+
+
+            // for return flight
+            var locationFiltered2 = allFlights.Where(x => x.DepartureDestination.ToLower() == arrivalDestination.ToLower() &&
+                                                         x.ArrivalDestination.ToLower() == departureLocation.ToLower()).ToList();
+            List<Itinerary> itineraries2 = new();
+
+            var flightId2 = "";
+            var departureDest2 = "";
+            var arrivalDest2 = "";
+            foreach (var route in locationFiltered2)
+            {
+                flightId2 = route.FlightId;
+                departureDest2 = route.ArrivalDestination;
+                arrivalDest2 = route.DepartureDestination;
+                for (var i = 0; i < route.Itineraries.Count; i++)
+                {
+                    if (route.Itineraries[i].DepartureAt.ToString().Split(" ")[0] == departureDate && route.Itineraries[i].AvailableSeats >= (adults + children))
+                    {
+                        itineraries2.Add(route.Itineraries[i]);
+                    }
+                }
+            }
+            OneWayFlightDTO returnFlight = new(flightId2, departureDest2, arrivalDest2, itineraries2);
+            RoundTripFlightDTO completedFiltering = new(outbound, returnFlight);
+            return Ok(completedFiltering);
+        }
 
 
 
 
-        // returns all flights if no criteria is met
-        return Ok(allFlights);
+
+        // return internal server error
+        return StatusCode(500);
 
     }
 
