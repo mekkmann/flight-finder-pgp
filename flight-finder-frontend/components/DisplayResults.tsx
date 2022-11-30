@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import ItineraryCard from "./ItineraryCard";
 
-// TODO: define type flight
-
 type flight = {
   flight_id: string;
   departureDestination: string;
@@ -29,13 +27,22 @@ interface IMyProps {
 }
 
 const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
-  const [flights, setFlights] = useState<flight[]>([]); // TODO: add type to usestate
+  const [flights, setFlights] = useState<flight[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
   function consoleFlight() {
     console.log(flights);
   }
-
+  function consoleSWAPI() {
+    fetch(props.urlToFetch)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setLoading(false);
+      })
+      .catch((e) => console.log(e.message));
+  }
+  // TODO: FIGURE OUT HOW TO MAP INTO ARRAY
   useEffect(() => {
     console.log(props.urlToFetch);
     setLoading(true);
@@ -49,14 +56,13 @@ const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
   }, [props.urlToFetch]);
 
   if (flights.length == 0)
-    return (
-      <p>We couldn't find any flights at the moment. Please try again later!</p>
-    );
-  // return <p>placeholder</p>;
+    return <p>Search for some flights, the Skies await!</p>;
+
   return (
     <>
       <button onClick={consoleFlight}>Console Log all flights</button>
-      {/* {flights.map((flight, idx) => (
+      <button onClick={consoleSWAPI}>Console Log swapi</button>
+      {flights.map((flight, idx) => (
         <>
           <h2 key={flight.flight_id + idx}>
             Outbound from: {flight.departureDestination} | Arrival in:{" "}
@@ -71,7 +77,7 @@ const DisplayResults: React.FC<IMyProps> = (props: IMyProps) => {
             />
           ))}
         </>
-      ))} */}
+      ))}
     </>
   );
 };

@@ -113,8 +113,8 @@ public class FlightsController : ControllerBase
             foreach (var route in locationFiltered2)
             {
                 flightId2 = route.FlightId;
-                departureDest2 = route.ArrivalDestination;
-                arrivalDest2 = route.DepartureDestination;
+                departureDest2 = route.DepartureDestination;
+                arrivalDest2 = route.ArrivalDestination;
                 for (var i = 0; i < route.Itineraries.Count; i++)
                 {
                     if (route.Itineraries[i].DepartureAt.ToString().Split(" ")[0] == departureDate && route.Itineraries[i].AvailableSeats >= (adults + children))
@@ -124,6 +124,7 @@ public class FlightsController : ControllerBase
                 }
             }
             OneWayFlightDTO returnFlight = new(flightId2, departureDest2, arrivalDest2, itineraries2);
+            Console.WriteLine(departureDest1 + departureDest2);
             RoundTripFlightDTO completedFiltering = new(outbound, returnFlight);
             return Ok(completedFiltering);
         }
