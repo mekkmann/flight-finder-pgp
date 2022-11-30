@@ -4,8 +4,17 @@ import Link from "next/link";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+type selectedFlight = {
+  flight_id?: string;
+  departureDate: Date;
+  price: number;
+  departureLocation: string;
+  arrivalLocation: string;
+};
+
 interface IMyProps {
   setUrlFunc: React.Dispatch<React.SetStateAction<string>>;
+  setAmountOfPassengersFunc: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const SearchForm = (props: IMyProps) => {
@@ -27,6 +36,10 @@ const SearchForm = (props: IMyProps) => {
   };
   const handleArrivalDestination = (e: React.ChangeEvent<HTMLInputElement>) => {
     setArrivalDestination(e.target.value);
+  };
+  const handleLocationSwitch = () => {
+    console.log("Old arrival: ", arrivalDestination);
+    console.log("OLd departure: ", departureLocation);
   };
 
   function handleGetSearchUrl() {
@@ -50,6 +63,7 @@ const SearchForm = (props: IMyProps) => {
       direct;
 
     props.setUrlFunc(url);
+    props.setAmountOfPassengersFunc(numOfAdults + numOfChildren);
   }
   return (
     <div className="searchForm">
@@ -61,6 +75,7 @@ const SearchForm = (props: IMyProps) => {
           id="departureLocation"
           onChange={(e) => handleDepartureLocation(e)}
         />
+        <button onClick={() => handleLocationSwitch()}>Switch</button>
         <label htmlFor="arrivalDestination">To: </label>
         <input
           type="text"

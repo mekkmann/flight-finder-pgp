@@ -2,10 +2,10 @@
     height: 3.75rem; 
     display: flex;
     align-items: center;
+    justify-content: space-between;
     background-color: #131921;
     position: sticky;
     top: 0;
-    z-index: 100;
     color: whitesmoke;
     font-family: monospace;
 }

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 type itinerary = {
   arriveAt: Date;
@@ -12,15 +14,24 @@ type price = {
   child: number;
   currency: string;
 };
+type selectedFlight = {
+  flight_id?: string;
+  departureDate: Date;
+  price: number;
+  departureLocation: string;
+  arrivalLocation: string;
+};
 
 interface IMyProps {
   itinerary: itinerary;
   arrivalDestination: string;
   departureDestination: string;
   flightId: string;
+  setDestination: React.Dispatch<React.SetStateAction<selectedFlight[]>>;
 }
 
 const ItineraryCard = (props: IMyProps) => {
+  const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
 
   const handleClick = () => {
@@ -39,7 +50,7 @@ const ItineraryCard = (props: IMyProps) => {
     <div
       className="itineraryCard"
       onClick={handleClick}
-      style={{ border: "2px solid black", marginTop: "10px", zIndex: "0" }}
+      style={{ border: "2px solid black", marginTop: "10px", zIndex: "1" }}
     >
       <h3>{props.departureDestination + ": " + props.itinerary.depatureAt}</h3>
       <h3>{props.arrivalDestination + ": " + props.itinerary.arriveAt}</h3>
@@ -61,7 +72,30 @@ const ItineraryCard = (props: IMyProps) => {
               " " +
               props.itinerary.prices[0].currency}
           </h3>
-          <button onClick={() => console.log("go to book")}>Book</button>
+          {/* <Link
+            // href={"/flights/" + props.flightId + "/routes/" + "rake-route-id"}
+            href={{
+              pathname:
+                "/flights/" + props.flightId + "/routes/" + "fake-route-id",
+              query: "hejsanhejsan",
+            }}
+          > */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              props.setDestination([
+                {
+                  flight_id: props.flightId,
+                  departureDate: props.itinerary.depatureAt,
+                  price: props.itinerary.prices[0].adult,
+                  departureLocation: props.departureDestination,
+                  arrivalLocation: props.arrivalDestination,
+                },
+              ]);
+            }}
+          >
+            Choose Flight
+          </button>
         </div>
       )}
     </div>

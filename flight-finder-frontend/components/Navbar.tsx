@@ -2,11 +2,8 @@ import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import Link from "next/link";
-// import { useStateValue } from "../StateProvider";
 
 function Navbar() {
-  // const [{ cart }, dispatch] = useStateValue();
-
   return (
     <div className="header">
       <Link href="/" className="header__logo">
@@ -15,10 +12,10 @@ function Navbar() {
         </p>
       </Link>
 
-      <div className="header__search">
+      {/* <div className="header__search">
         <input className="header__searchInput" type="text" />
         <SearchIcon className="header__searchIcon" />
-      </div>
+      </div> */}
 
       <div className="header__nav">
         <Link href="/random">
