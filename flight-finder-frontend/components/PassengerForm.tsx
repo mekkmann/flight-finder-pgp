@@ -50,16 +50,9 @@ const PassengerForm = () => {
               <input type="date" />
             </div>
             <div
-              className=""
-              style={{
-                display: "flex",
-                flexDirection: "row",
-              }}
+              className="passengerForm_contact"
+              style={{ display: "flex", flexDirection: "column" }}
             >
-              <label>+12 (Adult):</label>
-              <input type="checkbox" />
-            </div>
-            <div className="passengerForm_contact">
               <label>Email:</label>
               <input type="email" />
               <label>Phone:</label>
