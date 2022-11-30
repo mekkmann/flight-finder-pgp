@@ -3,7 +3,7 @@ import styles from "../styles/Home.module.css";
 
 import Navbar from "../components/Navbar";
 import SearchForm from "../components/SearchForm";
-import DisplayResults from "../components/DisplayResults";
+import DisplayOneWayResults from "../components/DisplayOneWayResults";
 import React, { useState } from "react";
 
 export default function Home() {
@@ -24,7 +24,7 @@ export default function Home() {
         <br />
         <hr style={{ width: "100%" }} />
         <br />
-        <DisplayResults urlToFetch={urlToFetch} />
+        <DisplayOneWayResults urlToFetch={urlToFetch} />
       </main>
 
       <footer className={styles.footer}></footer>

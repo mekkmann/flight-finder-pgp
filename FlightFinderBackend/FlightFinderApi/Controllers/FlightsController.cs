@@ -71,7 +71,8 @@ public class FlightsController : ControllerBase
                 }
             }
             OneWayFlightDTO completedFiltering = new(flightId, departureDest, arrivalDest, itineraries);
-            return Ok(completedFiltering);
+            List<OneWayFlightDTO> list = new() { completedFiltering };
+            return Ok(list);
         }
 
         // for roundtrip
@@ -117,16 +118,16 @@ public class FlightsController : ControllerBase
                 arrivalDest2 = route.ArrivalDestination;
                 for (var i = 0; i < route.Itineraries.Count; i++)
                 {
-                    if (route.Itineraries[i].DepartureAt.ToString().Split(" ")[0] == departureDate && route.Itineraries[i].AvailableSeats >= (adults + children))
+                    if (route.Itineraries[i].DepartureAt.ToString().Split(" ")[0] == returnDate && route.Itineraries[i].AvailableSeats >= (adults + children))
                     {
+                        Console.WriteLine(route.Itineraries[i].DepartureAt.ToString().Split(" ")[0]);
                         itineraries2.Add(route.Itineraries[i]);
                     }
                 }
             }
             OneWayFlightDTO returnFlight = new(flightId2, departureDest2, arrivalDest2, itineraries2);
-            Console.WriteLine(departureDest1 + departureDest2);
-            RoundTripFlightDTO completedFiltering = new(outbound, returnFlight);
-            return Ok(completedFiltering);
+            List<OneWayFlightDTO> flightList = new() { outbound, returnFlight };
+            return Ok(flightList);
         }
 
 
@@ -137,13 +138,6 @@ public class FlightsController : ControllerBase
         return StatusCode(500);
 
     }
-
-    // MAYBE: get singular flight
-    // [HttpGet("/flights/{id}")]
-    // public IActionResult GetFlight(string id)
-    // {
-    //     return Ok(id);
-    // }
 
     // HELPER METHODS
 
