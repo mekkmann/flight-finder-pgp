@@ -17,7 +17,7 @@ type price = {
 type selectedFlight = {
   flight_id?: string;
   departureDate: Date;
-  price: number;
+  price: price;
   departureLocation: string;
   arrivalLocation: string;
 };
@@ -87,7 +87,7 @@ const ItineraryCard = (props: IMyProps) => {
                 {
                   flight_id: props.flightId,
                   departureDate: props.itinerary.depatureAt,
-                  price: props.itinerary.prices[0].adult,
+                  price: props.itinerary.prices[0],
                   departureLocation: props.departureDestination,
                   arrivalLocation: props.arrivalDestination,
                 },

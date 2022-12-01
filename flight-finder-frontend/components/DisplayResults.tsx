@@ -25,7 +25,7 @@ type price = {
 type selectedFlight = {
   flight_id?: string;
   departureDate: Date;
-  price: number;
+  price: price;
   departureLocation: string;
   arrivalLocation: string;
 };
@@ -94,7 +94,7 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                     props.outbound[0].arrivalLocation}
                 </p>
                 <p>{props.outbound[0].flight_id}</p>
-                <p>{props.outbound[0].price} SEK</p>
+                <p>{props.outbound[0].price.adult + " SEK"}</p>
                 <button
                   onClick={() => {
                     props.setOutbound([]);
@@ -123,7 +123,8 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                 query: {
                   flight_id1: props.outbound[0].flight_id,
                   departureDate1: props.outbound[0].departureDate.toString(),
-                  price1: props.outbound[0].price,
+                  priceAdult1: props.outbound[0].price.adult,
+                  priceChild1: props.outbound[0].price.child,
                   departureLocation1: props.outbound[0].departureLocation,
                   arrivalLocation1: props.outbound[0].arrivalLocation,
                   amountOfPassengers: props.amountOfPassengers,
@@ -155,7 +156,7 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                     props.outbound[0].arrivalLocation}
                 </p>
                 <p>{props.outbound[0].flight_id}</p>
-                <p>{props.outbound[0].price} SEK</p>
+                <p>{props.outbound[0].price.adult + " SEK"} </p>
                 <button
                   onClick={() => {
                     props.setOutbound([]);
@@ -177,7 +178,7 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                     props.returnF[0].arrivalLocation}
                 </p>
                 <p>{props.returnF[0].flight_id}</p>
-                <p>{props.returnF[0].price} SEK</p>
+                <p>{props.returnF[0].price.adult} SEK</p>
                 <button
                   onClick={() => {
                     props.setReturnF([]);
@@ -206,12 +207,14 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                 query: {
                   flight_id1: props.outbound[0].flight_id,
                   departureDate1: props.outbound[0].departureDate.toString(),
-                  price1: props.outbound[0].price,
+                  priceAdult1: props.outbound[0].price.adult,
+                  priceChild1: props.outbound[0].price.child,
                   departureLocation1: props.outbound[0].departureLocation,
                   arrivalLocation1: props.outbound[0].arrivalLocation,
                   flight_id2: props.returnF[0].flight_id,
                   departureDate2: props.returnF[0].departureDate.toString(),
-                  price2: props.returnF[0].price,
+                  priceAdult2: props.returnF[0].price.adult,
+                  priceChild2: props.returnF[0].price.child,
                   departureLocation2: props.returnF[0].departureLocation,
                   arrivalLocation2: props.returnF[0].arrivalLocation,
                   amountOfPassengers: props.amountOfPassengers,

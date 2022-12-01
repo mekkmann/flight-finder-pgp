@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 // TODO: FIGURE OUT HOW TO DO LABELS WHEN MULTIPLE FORMS ON THE SAME PAGE
-
-const PassengerForm = () => {
-  const [open, setOpen] = useState(true);
+interface IMyProps {
+  increaseChildren: React.Dispatch<React.SetStateAction<number>>;
+  increaseAdults: React.Dispatch<React.SetStateAction<number>>;
+}
+const PassengerForm: React.FC<IMyProps> = (props: IMyProps) => {
+  const [open, setOpen] = useState<boolean>(true);
+  const [isAdult, setAdult] = useState<boolean>(true);
   //   const handleDepartureLocation = (e: React.ChangeEvent<HTMLInputElement>) => {
   //     setDepartureLocation(e.target.value);
   //   };
+
+  // useEffect(() => {
+  //   if (!isAdult) {
+  //     props.increaseChildren;
+  //   }
+  // }, [isAdult]);
 
   return (
     <div
@@ -26,6 +36,8 @@ const PassengerForm = () => {
     >
       <h3>Passenger</h3>
       <button onClick={() => setOpen(!open)}>{open ? "Close" : "Open"}</button>
+      <button onClick={() => props.increaseAdults(0)}>+ Adult</button>
+      <button onClick={() => props.increaseChildren(0)}>+ Child</button>
       {open ? (
         <>
           <div

@@ -21,16 +21,16 @@ import { type } from "os";
 //   prices: price[];
 // };
 
-// type price = {
-//   adult: number;
-//   child: number;
-//   currency: string;
-// };
+type price = {
+  adult: number;
+  child: number;
+  currency: string;
+};
 
 type selectedFlight = {
   flight_id?: string;
   departureDate: Date;
-  price: number;
+  price: price;
   departureLocation: string;
   arrivalLocation: string;
 };

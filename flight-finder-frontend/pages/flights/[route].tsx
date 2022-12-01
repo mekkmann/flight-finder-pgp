@@ -2,25 +2,63 @@ import Head from "next/head";
 import styles from "../../styles/Home.module.css";
 import { useRouter } from "next/router";
 import Navbar from "../../components/Navbar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PassengerForm from "../../components/PassengerForm";
+
+type passenger = {
+  firstName: string;
+  lastName: string;
+  dob: Date;
+  email: string;
+  phone: number;
+};
 
 export default function Home() {
   const router = useRouter();
   const {
     flight_id1,
     departureDate1,
-    price1,
+    priceAdult1,
+    priceChild1,
     departureLocation1,
     arrivalLocation1,
     flight_id2,
     departureDate2,
-    price2,
+    priceAdult2,
+    priceChild2,
     departureLocation2,
     arrivalLocation2,
     amountOfPassengers,
   } = router.query;
   const [urlToPost, setUrlToPost] = useState<string>("");
+  const [numOfAdults, setNumOfAdults] = useState<number>(0);
+  const [numOfChildren, setNumOfChildren] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [passengerList, setPassengerList] = useState<passenger[]>([]);
+  const getTotalPrice = () => {
+    let childTotal;
+    let adultTotal;
+    if (flight_id1 && flight_id2) {
+      childTotal = numOfChildren * (Number(priceChild1) + Number(priceChild2));
+      adultTotal = numOfAdults * (Number(priceAdult1) + Number(priceAdult2));
+      setTotalPrice(childTotal + adultTotal);
+    }
+    if (flight_id1 && !flight_id2) {
+      childTotal = numOfChildren * Number(priceChild1);
+      adultTotal = numOfAdults * Number(priceAdult1);
+      setTotalPrice(childTotal + adultTotal);
+    }
+  };
+  const increaseChildren = () => {
+    setNumOfChildren(numOfChildren + 1);
+  };
+  const increaseAdults = () => {
+    setNumOfAdults(numOfAdults + 1);
+  };
+
+  useEffect(() => {
+    getTotalPrice();
+  }, [numOfAdults, numOfChildren]);
 
   const passengerForms = [...Array(Number(amountOfPassengers))];
   if (flight_id1 && flight_id2) {
@@ -66,8 +104,8 @@ export default function Home() {
                 <li>Outbound from: {departureLocation1}</li>
                 <li>Arrival in: {arrivalLocation1}</li>
                 <li>Passengers: {amountOfPassengers}</li>
-                <li>Price for Adults: {price1} SEK</li>
-                <li>Price for Children: {"placeholder"} SEK</li>
+                <li>Price for Adults: {priceAdult1} SEK</li>
+                <li>Price for Children: {priceChild1} SEK</li>
                 <li>Flight ID:{flight_id1}</li>
               </ul>
               <br />
@@ -89,8 +127,8 @@ export default function Home() {
                 <li>Outbound from: {departureLocation2}</li>
                 <li>Arrival in: {arrivalLocation2}</li>
                 <li>Passengers: {amountOfPassengers}</li>
-                <li>Price for Adults: {price2} SEK</li>
-                <li>Price for Children: {"placeholder"} SEK</li>
+                <li>Price for Adults: {priceAdult2} SEK</li>
+                <li>Price for Children: {priceChild2} SEK</li>
                 <li>Flight ID:{flight_id2}</li>
               </ul>
               <br />
@@ -98,12 +136,15 @@ export default function Home() {
           </div>
           <div>
             {passengerForms.map((_) => (
-              <PassengerForm />
+              <PassengerForm
+                increaseChildren={increaseChildren}
+                increaseAdults={increaseAdults}
+              />
             ))}
           </div>
-          <h4>Adults: {"placeholder"}</h4>
-          <h4>Children: {"placeholder"}</h4>
-          <h4>SEK Total: {"placeholder"}</h4>
+          <h4>Adults: {numOfAdults}</h4>
+          <h4>Children: {numOfChildren}</h4>
+          <h4>Total: {totalPrice} SEK </h4>
           <button>Confirm Booking</button>
         </main>
 
@@ -111,7 +152,7 @@ export default function Home() {
       </div>
     );
   }
-  if (flight_id1) {
+  if (flight_id1 && !flight_id2) {
     return (
       <div className={styles.container}>
         <Head>
@@ -136,16 +177,22 @@ export default function Home() {
             <li>Outbound from: {departureLocation1}</li>
             <li>Arrival in: {arrivalLocation1}</li>
             <li>Passengers: {amountOfPassengers}</li>
-            <li>Price for Adults: {price1} SEK</li>
-            <li>Price for Children: {"placeholder"} SEK</li>
+            <li>Price for Adults: {priceAdult1} SEK</li>
+            <li>Price for Children: {priceChild1} SEK</li>
             <li>Flight ID:{flight_id1}</li>
           </ul>
           <br />
           <div>
             {passengerForms.map((_) => (
-              <PassengerForm />
+              <PassengerForm
+                increaseChildren={increaseChildren}
+                increaseAdults={increaseAdults}
+              />
             ))}
           </div>
+          <h4>Adults: {numOfAdults}</h4>
+          <h4>Children: {numOfChildren}</h4>
+          <h4>Total: {totalPrice} SEK </h4>
           <button>Confirm Booking</button>
         </main>
 
