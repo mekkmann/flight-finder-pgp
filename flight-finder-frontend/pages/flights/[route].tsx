@@ -193,7 +193,9 @@ export default function Home() {
           <h4>Adults: {numOfAdults}</h4>
           <h4>Children: {numOfChildren}</h4>
           <h4>Total: {totalPrice} SEK </h4>
-          <button>Confirm Booking</button>
+          <button onClick={() => router.push("/flights/booking/" + "confirm/")}>
+            Confirm Booking
+          </button>
         </main>
 
         <footer className={styles.footer}></footer>
