@@ -2,8 +2,9 @@ import Head from "next/head";
 import styles from "../../styles/Home.module.css";
 import { useRouter } from "next/router";
 import Navbar from "../../components/Navbar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PassengerForm from "../../components/PassengerForm";
+import { Context } from "../../helpers/Context";
 
 type passenger = {
   firstName: string;
@@ -14,27 +15,30 @@ type passenger = {
 };
 
 export default function Home() {
+  const { passengerList } = useContext(Context);
   const router = useRouter();
   const {
     flight_id1,
     departureDate1,
+    arrivalDate1,
     priceAdult1,
     priceChild1,
     departureLocation1,
     arrivalLocation1,
+    duration1,
     flight_id2,
     departureDate2,
+    arrivalDate2,
     priceAdult2,
     priceChild2,
     departureLocation2,
     arrivalLocation2,
+    duration2,
     amountOfPassengers,
   } = router.query;
-  const [urlToPost, setUrlToPost] = useState<string>("");
   const [numOfAdults, setNumOfAdults] = useState<number>(0);
   const [numOfChildren, setNumOfChildren] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const [passengerList, setPassengerList] = useState<passenger[]>([]);
   const getTotalPrice = () => {
     let childTotal;
     let adultTotal;
@@ -59,6 +63,9 @@ export default function Home() {
   useEffect(() => {
     getTotalPrice();
   }, [numOfAdults, numOfChildren]);
+  // useEffect(() => {
+  //   setPassengerList()
+  // }, []);
 
   const passengerForms = [...Array(Number(amountOfPassengers))];
   if (flight_id1 && flight_id2) {
@@ -98,11 +105,14 @@ export default function Home() {
               <h3>Outbound</h3>
               <ul style={{ listStyle: "none" }}>
                 <li>
-                  Departure: {departureDate1?.toString().split("T")[0]} at{" "}
-                  {departureDate1?.toString().split("T")[1]}
+                  Departure from:{" "}
+                  {departureLocation1 +
+                    "" +
+                    departureDate1?.toString().split("T")[0]}{" "}
+                  at {departureDate1?.toString().split("T")[1]}
                 </li>
-                <li>Outbound from: {departureLocation1}</li>
                 <li>Arrival in: {arrivalLocation1}</li>
+                <li>Duration: {duration1}</li>
                 <li>Passengers: {amountOfPassengers}</li>
                 <li>Price for Adults: {priceAdult1} SEK</li>
                 <li>Price for Children: {priceChild1} SEK</li>
@@ -125,6 +135,7 @@ export default function Home() {
                   {departureDate2?.toString().split("T")[1]}
                 </li>
                 <li>Outbound from: {departureLocation2}</li>
+                <li>Duration: {duration2}</li>
                 <li>Arrival in: {arrivalLocation2}</li>
                 <li>Passengers: {amountOfPassengers}</li>
                 <li>Price for Adults: {priceAdult2} SEK</li>
@@ -135,17 +146,41 @@ export default function Home() {
             </div>
           </div>
           <div>
-            {passengerForms.map((_) => (
+            {passengerForms.map((_, index) => (
               <PassengerForm
                 increaseChildren={increaseChildren}
                 increaseAdults={increaseAdults}
+                indexOfPassenger={index}
               />
             ))}
           </div>
           <h4>Adults: {numOfAdults}</h4>
           <h4>Children: {numOfChildren}</h4>
           <h4>Total: {totalPrice} SEK </h4>
-          <button>Confirm Booking</button>
+          <button
+            onClick={() => {
+              router.push({
+                pathname: "/flights/booking/" + "confirm",
+                query: {
+                  flight_id1: flight_id1,
+                  departureDate1: departureDate1,
+                  departureLocation1: departureLocation1,
+                  arrivalLocation1: arrivalLocation1,
+                  arrivalDate1: arrivalDate1,
+                  flight_id2: flight_id2,
+                  departureDate2: departureDate2,
+                  departureLocation2: departureLocation2,
+                  arrivalLocation2: arrivalLocation2,
+                  arrivalDate2: arrivalDate2,
+                  amountOfPassengers: amountOfPassengers,
+                  totalPrice: totalPrice,
+                },
+              });
+            }}
+            disabled={passengerForms.length != passengerList.length}
+          >
+            Confirm Booking
+          </button>
         </main>
 
         <footer className={styles.footer}></footer>
@@ -171,11 +206,21 @@ export default function Home() {
           <br />
           <ul>
             <li>
-              Departure: {departureDate1?.toString().split("T")[0]} at{" "}
-              {departureDate1?.toString().split("T")[1]}
+              Departure from :{" "}
+              {departureLocation1 +
+                " " +
+                departureDate1?.toString().split("T")[0]}{" "}
+              at {departureDate1?.toString().split("T")[1]}
             </li>
-            <li>Outbound from: {departureLocation1}</li>
-            <li>Arrival in: {arrivalLocation1}</li>
+            <li>
+              Arrival in:{" "}
+              {arrivalLocation1 +
+                ", " +
+                arrivalDate1?.toString().split("T")[0] +
+                " at " +
+                arrivalDate1?.toString().split("T")[1]}
+            </li>
+            <li>Duration: {duration1} hrs</li>
             <li>Passengers: {amountOfPassengers}</li>
             <li>Price for Adults: {priceAdult1} SEK</li>
             <li>Price for Children: {priceChild1} SEK</li>
@@ -183,17 +228,34 @@ export default function Home() {
           </ul>
           <br />
           <div>
-            {passengerForms.map((_) => (
+            {passengerForms.map((_, index) => (
               <PassengerForm
                 increaseChildren={increaseChildren}
                 increaseAdults={increaseAdults}
+                indexOfPassenger={index}
               />
             ))}
           </div>
           <h4>Adults: {numOfAdults}</h4>
           <h4>Children: {numOfChildren}</h4>
           <h4>Total: {totalPrice} SEK </h4>
-          <button onClick={() => router.push("/flights/booking/" + "confirm/")}>
+          <button
+            onClick={() => {
+              router.push({
+                pathname: "/flights/booking/" + "confirm",
+                query: {
+                  flight_id1: flight_id1,
+                  departureDate1: departureDate1,
+                  departureLocation1: departureLocation1,
+                  arrivalLocation1: arrivalLocation1,
+                  arrivalDate1: arrivalDate1,
+                  amountOfPassengers: amountOfPassengers,
+                  totalPrice: totalPrice,
+                },
+              });
+            }}
+            disabled={passengerForms.length != passengerList.length}
+          >
             Confirm Booking
           </button>
         </main>

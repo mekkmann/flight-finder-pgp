@@ -25,9 +25,11 @@ type price = {
 type selectedFlight = {
   flight_id?: string;
   departureDate: Date;
-  price: price;
   departureLocation: string;
   arrivalLocation: string;
+  arrivalDate: Date;
+  duration: number;
+  price: price;
 };
 interface IMyProps {
   urlToFetch: string;
@@ -53,6 +55,7 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
 
   useEffect(() => {
     console.log("url-length: ", props.urlToFetch.length);
+    console.log("url: ", props.urlToFetch);
     if (props.urlToFetch != "") {
       setLoading(true);
       props.setOutbound([]);
@@ -127,7 +130,9 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                   priceChild1: props.outbound[0].price.child,
                   departureLocation1: props.outbound[0].departureLocation,
                   arrivalLocation1: props.outbound[0].arrivalLocation,
+                  arrivalDate1: props.outbound[0].arrivalDate.toString(),
                   amountOfPassengers: props.amountOfPassengers,
+                  duration1: props.outbound[0].duration,
                 },
               });
             }}
@@ -207,16 +212,20 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                 query: {
                   flight_id1: props.outbound[0].flight_id,
                   departureDate1: props.outbound[0].departureDate.toString(),
+                  arrivalDate1: props.outbound[0].arrivalDate.toString(),
                   priceAdult1: props.outbound[0].price.adult,
                   priceChild1: props.outbound[0].price.child,
                   departureLocation1: props.outbound[0].departureLocation,
                   arrivalLocation1: props.outbound[0].arrivalLocation,
+                  duration1: props.outbound[0].duration,
                   flight_id2: props.returnF[0].flight_id,
                   departureDate2: props.returnF[0].departureDate.toString(),
+                  arrivalDate2: props.returnF[0].arrivalDate.toString(),
                   priceAdult2: props.returnF[0].price.adult,
                   priceChild2: props.returnF[0].price.child,
                   departureLocation2: props.returnF[0].departureLocation,
                   arrivalLocation2: props.returnF[0].arrivalLocation,
+                  duration2: props.returnF[0].duration,
                   amountOfPassengers: props.amountOfPassengers,
                 },
               });

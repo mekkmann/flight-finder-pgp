@@ -4,7 +4,8 @@ import styles from "../styles/Home.module.css";
 import Navbar from "../components/Navbar";
 import SearchForm from "../components/SearchForm";
 import DisplayOneWayResults from "../components/DisplayResults";
-import React, { useState } from "react";
+import { Context } from "../helpers/Context";
+import React, { useState, useContext, useEffect } from "react";
 import { type } from "os";
 
 // type flight = {
@@ -33,12 +34,18 @@ type selectedFlight = {
   price: price;
   departureLocation: string;
   arrivalLocation: string;
+  arrivalDate: Date;
+  duration: number;
 };
 export default function Home() {
+  const { setPassengerList } = useContext(Context);
   const [outbound, setOutbound] = useState<selectedFlight[]>([]);
   const [returnF, setReturnF] = useState<selectedFlight[]>([]);
   const [urlToFetch, setUrlToFetch] = useState<string>("");
   const [amountOfPassengers, setAmountOfPassengers] = useState<number>(0);
+  useEffect(() => {
+    setPassengerList([]);
+  }, []);
   return (
     <div className={styles.container}>
       <Head>
@@ -49,8 +56,8 @@ export default function Home() {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar />
       <main className={styles.main}>
+        <Navbar />
         <SearchForm
           setUrlFunc={setUrlToFetch}
           setAmountOfPassengersFunc={setAmountOfPassengers}

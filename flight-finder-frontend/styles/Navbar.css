@@ -1,5 +1,6 @@
 .header {
     height: 3.75rem; 
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -8,6 +9,7 @@
     top: 0;
     color: whitesmoke;
     font-family: monospace;
+    z-index: 100;
 }
 
 .header__logo {

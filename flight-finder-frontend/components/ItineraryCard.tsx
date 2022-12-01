@@ -17,9 +17,11 @@ type price = {
 type selectedFlight = {
   flight_id?: string;
   departureDate: Date;
+  arrivalDate: Date;
   price: price;
   departureLocation: string;
   arrivalLocation: string;
+  duration: number;
 };
 
 interface IMyProps {
@@ -33,6 +35,7 @@ interface IMyProps {
 const ItineraryCard = (props: IMyProps) => {
   const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
+  let durInHrs: number;
 
   const handleClick = () => {
     setOpen(!open);
@@ -44,6 +47,7 @@ const ItineraryCard = (props: IMyProps) => {
       1000 /
       60 /
       60;
+    durInHrs = duration;
     return duration;
   };
   return (
@@ -72,14 +76,6 @@ const ItineraryCard = (props: IMyProps) => {
               " " +
               props.itinerary.prices[0].currency}
           </h3>
-          {/* <Link
-            // href={"/flights/" + props.flightId + "/routes/" + "rake-route-id"}
-            href={{
-              pathname:
-                "/flights/" + props.flightId + "/routes/" + "fake-route-id",
-              query: "hejsanhejsan",
-            }}
-          > */}
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -87,9 +83,11 @@ const ItineraryCard = (props: IMyProps) => {
                 {
                   flight_id: props.flightId,
                   departureDate: props.itinerary.depatureAt,
-                  price: props.itinerary.prices[0],
                   departureLocation: props.departureDestination,
+                  price: props.itinerary.prices[0],
                   arrivalLocation: props.arrivalDestination,
+                  arrivalDate: props.itinerary.arriveAt,
+                  duration: durInHrs,
                 },
               ]);
             }}

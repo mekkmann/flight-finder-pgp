@@ -1,16 +1,6 @@
 import React, { useState } from "react";
-import Link from "next/link";
-
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-type selectedFlight = {
-  flight_id?: string;
-  departureDate: Date;
-  price: number;
-  departureLocation: string;
-  arrivalLocation: string;
-};
 
 interface IMyProps {
   setUrlFunc: React.Dispatch<React.SetStateAction<string>>;
@@ -19,7 +9,7 @@ interface IMyProps {
 
 const SearchForm = (props: IMyProps) => {
   const baseUrl: string = "https://localhost:7283/flights/search?";
-  const phReturnDate = new Date();
+  const phReturnDate: Date = new Date();
   phReturnDate.setDate(phReturnDate.getDate() + 5);
 
   const [departureDate, setDepartureDate] = useState<Date>(new Date());
@@ -36,10 +26,6 @@ const SearchForm = (props: IMyProps) => {
   };
   const handleArrivalDestination = (e: React.ChangeEvent<HTMLInputElement>) => {
     setArrivalDestination(e.target.value);
-  };
-  const handleLocationSwitch = () => {
-    console.log("Old arrival: ", arrivalDestination);
-    console.log("OLd departure: ", departureLocation);
   };
 
   function handleGetSearchUrl() {
@@ -68,41 +54,50 @@ const SearchForm = (props: IMyProps) => {
   return (
     <div className="searchForm">
       <div className="searchForm_locations">
-        <label htmlFor="departureLocation">From: </label>
-        <input
-          type="text"
-          name="departureLocation"
-          id="departureLocation"
-          onChange={(e) => handleDepartureLocation(e)}
-        />
-        <button onClick={() => handleLocationSwitch()}>Switch</button>
-        <label htmlFor="arrivalDestination">To: </label>
-        <input
-          type="text"
-          name="arrivalDestination"
-          id="arrivalDestination"
-          onChange={(e) => handleArrivalDestination(e)}
-        />
+        <div className="searchForm_locations-1">
+          <label htmlFor="departureLocation">From: </label>
+          <input
+            type="text"
+            name="departureLocation"
+            id="departureLocation"
+            onChange={(e) => handleDepartureLocation(e)}
+          />
+        </div>
+        <div className="searchForm_locations-2">
+          <label htmlFor="arrivalDestination">To: </label>
+          <input
+            type="text"
+            name="arrivalDestination"
+            id="arrivalDestination"
+            onChange={(e) => handleArrivalDestination(e)}
+          />
+        </div>
       </div>
       <div className="searchForm_dates">
-        <label htmlFor="outboundFlight">Outbound flight: </label>
-        <DatePicker
-          selected={departureDate}
-          onChange={(date: Date) => setDepartureDate(date)}
-          id="outboundFlight"
-        />
+        <div className="searchForm_dates-1">
+          <label htmlFor="outboundFlight" className="searchForm_dates-label">
+            Outbound flight:{" "}
+          </label>
+          <DatePicker
+            selected={departureDate}
+            onChange={(date: Date) => setDepartureDate(date)}
+            id="outboundFlight"
+            className="searchForm_dates-datePicker"
+          />
+        </div>
         {roundTrip ? (
-          <>
-            <label htmlFor="returnFlight">Return flight: </label>
+          <div className="searchForm_dates-2">
+            <label htmlFor="returnFlight" className="searchForm_dates-label">
+              Return flight:{" "}
+            </label>
             <DatePicker
               selected={returnDate}
               onChange={(date: Date) => setReturnDate(date)}
               id="returnFlight"
+              className="searchForm_dates-datePicker"
             />
-          </>
-        ) : (
-          <></>
-        )}
+          </div>
+        ) : null}
       </div>
       <div className="searchForm_misc">
         <div className="searchForm_misc-people">
@@ -146,28 +141,45 @@ const SearchForm = (props: IMyProps) => {
           </button>
         </div>
         <div className="searchForm_misc-flight">
-          <label htmlFor="roundTrip">Round trip: </label>
-          <input
-            type="checkbox"
-            name="roundTrip"
-            id="roundTrip"
-            checked={roundTrip}
-            onChange={(e) => {
-              setRoundTrip(!roundTrip);
-            }}
-          />
-          <label htmlFor="direct">Direct: </label>
-          <input
-            type="checkbox"
-            name="direct"
-            id="direct"
-            onChange={(e) => {
-              setDirect(!direct);
-            }}
-          />
+          <div className="searchForm_misc-flight-roundTrip">
+            <label
+              htmlFor="roundTrip"
+              className="searchForm_misc-flight-roundTrip-label"
+            >
+              Round trip:{" "}
+            </label>
+            <input
+              type="checkbox"
+              name="roundTrip"
+              id="roundTrip"
+              checked={roundTrip}
+              onChange={(e) => {
+                setRoundTrip(!roundTrip);
+              }}
+              className="searchForm_misc-flight-roundTrip-input"
+            />
+          </div>
+          <div className="searchForm_misc-flight-direct">
+            <label
+              htmlFor="direct"
+              className="searchForm_misc-flight-direct-label"
+            >
+              Direct:{" "}
+            </label>
+            <input
+              type="checkbox"
+              name="direct"
+              id="direct"
+              onChange={(e) => {
+                setDirect(!direct);
+              }}
+              className="searchForm_misc-flight-direct-input"
+            />
+          </div>
         </div>
       </div>
       <button
+        className="searchForm_button"
         onClick={(e) => {
           e.preventDefault();
           handleGetSearchUrl();
