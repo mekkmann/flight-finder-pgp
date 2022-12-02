@@ -6,6 +6,7 @@ import Navbar from "../../../components/Navbar";
 import { Context } from "../../../helpers/Context";
 import PassengerCard from "../../../components/PassengerCard";
 import LastAlert from "../../../components/LastAlert";
+import { Button, duration } from "@mui/material";
 
 export default function Home() {
   const { passengerList, setPassengerList } = useContext(Context);
@@ -13,7 +14,13 @@ export default function Home() {
   const [lastCheck, setLastCheck] = useState<boolean>(false);
   const [postSuccess, setPostSuccess] = useState<boolean>(false);
   const [waiting, setWaiting] = useState<boolean>(true);
+  const [sendEmail, setSendEmail] = useState<boolean>(false);
   const [confirmationEmail, setConfirmationEmail] = useState<string>("");
+
+  const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setConfirmationEmail(e.target.value);
+  };
 
   const router = useRouter();
   let {
@@ -28,17 +35,13 @@ export default function Home() {
     arrivalLocation2,
     arrivalDate2,
     amountOfPassengers,
+    duration1,
+    duration2,
     totalPrice,
   } = router.query;
   useEffect(() => {
-    // if (flight_id1 == undefined) flight_id1 = "";
-    // if (departureDate1 == undefined) departureDate1 = "";
-    // // if (flight_id2 == undefined) flight_id2 = "";
-    // if (departureDate2 == undefined) departureDate2 = "";
-    // if (amountOfPassengers == undefined) amountOfPassengers = "";
     if (lastCheck) {
-      console.log("posting to db");
-      if (flight_id1 && !flight_id2) bookFlight(postUrl1);
+      if (sendEmail) if (flight_id1 && !flight_id2) bookFlight(postUrl1);
       if (flight_id1 && flight_id2) bookFlight(postUrl2);
     }
   }, [lastCheck]);
@@ -65,27 +68,13 @@ export default function Home() {
     "&departureDate2=" +
     departureDate2 +
     "&recipientEmail=" +
-    "alex.p.liljekvist@gmail.com" +
+    confirmationEmail +
     "&amountOfPassengers=" +
     amountOfPassengers;
-  // string? flightId1,
-  // DateTime? departureDate1,
-  // string? flightId2,
-  // DateTime? departureDate2,
-  // string? recipientEmail,
-  // int amountOfPassengers = 1
   const bookFlight = (url: string) => {
     fetch(url, {
       method: "POST",
       mode: "cors",
-      // body: JSON.stringify({
-      //   flightId1: flight_id1,
-      //   departureDate1: departureDate1,
-      //   flightId2: flight_id2,
-      //   departureDate2: departureDate2,
-      //   recipientEmail: confirmationEmail,
-      //   amountOfPassengers: amountOfPassengers,
-      // }),
     })
       .then((res) => {
         setWaiting(true);
@@ -142,6 +131,7 @@ export default function Home() {
                 " at " +
                 arrivalDate1?.toString().split("T")[1]}
             </li>
+            <li>Duration: {duration1 + " hrs"}</li>
             <li>Passengers: {amountOfPassengers}</li>
             <li>Flight ID: {flight_id1}</li>
           </ul>
@@ -208,6 +198,7 @@ export default function Home() {
                 " at " +
                 arrivalDate1?.toString().split("T")[1]}
             </li>
+            <li>Duration: {duration1 + " hrs"}</li>
             <li>Passengers: {amountOfPassengers}</li>
             <li>Flight ID: {flight_id1}</li>
           </ul>
@@ -226,6 +217,7 @@ export default function Home() {
                 " at " +
                 arrivalDate2?.toString().split("T")[1]}
             </li>
+            <li>Duration: {duration2 + " hrs"}</li>
             <li>Passengers: {amountOfPassengers}</li>
             <li>Flight ID: {flight_id2}</li>
           </ul>
@@ -237,6 +229,26 @@ export default function Home() {
           {passengerList.map((passenger) => (
             <PassengerCard passenger={passenger} />
           ))}
+          <div
+            className="confirmationEmail"
+            style={{ width: "50vw", border: "0.2rem solid black" }}
+          >
+            <label htmlFor="confirmationEmailInput">Confirmation Email:</label>
+            <input
+              type="email"
+              id="confirmationEmailInput"
+              onChange={(e) => handleEmail(e)}
+            ></input>
+            <Button
+              variant="contained"
+              onClick={() => setSendEmail(!sendEmail)}
+            >
+              I want a Confirmation Email
+            </Button>
+            {!sendEmail ? null : (
+              <p>You'll receive a confirmation shortly after booking</p>
+            )}
+          </div>
 
           <button
             onClick={handleModal}

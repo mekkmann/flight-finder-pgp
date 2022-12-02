@@ -173,6 +173,8 @@ export default function Home() {
                   arrivalLocation2: arrivalLocation2,
                   arrivalDate2: arrivalDate2,
                   amountOfPassengers: amountOfPassengers,
+                  duration1: duration1,
+                  duration2: duration2,
                   totalPrice: totalPrice,
                 },
               });
@@ -220,7 +222,7 @@ export default function Home() {
                 " at " +
                 arrivalDate1?.toString().split("T")[1]}
             </li>
-            <li>Duration: {duration1} hrs</li>
+            <li>Duration: {duration1 + " hrs"}</li>
             <li>Passengers: {amountOfPassengers}</li>
             <li>Price for Adults: {priceAdult1} SEK</li>
             <li>Price for Children: {priceChild1} SEK</li>
@@ -249,6 +251,7 @@ export default function Home() {
                   departureLocation1: departureLocation1,
                   arrivalLocation1: arrivalLocation1,
                   arrivalDate1: arrivalDate1,
+                  duration1: duration1,
                   amountOfPassengers: amountOfPassengers,
                   totalPrice: totalPrice,
                 },

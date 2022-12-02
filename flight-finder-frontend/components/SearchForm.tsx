@@ -1,7 +1,6 @@
 import { useState } from "react";
 import * as React from "react";
 import Alert from "@mui/material/Alert";
-import Stack from "@mui/material/Stack";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -12,11 +11,11 @@ interface IMyProps {
 
 const SearchForm = (props: IMyProps) => {
   const baseUrl: string = "https://localhost:7283/flights/search?";
-  const phReturnDate: Date = new Date();
-  phReturnDate.setDate(phReturnDate.getDate() + 5);
 
-  const [departureDate, setDepartureDate] = useState<Date>(new Date());
-  const [returnDate, setReturnDate] = useState<Date>(phReturnDate);
+  const [departureDate, setDepartureDate] = useState<Date>(
+    new Date("2022-12-12")
+  );
+  const [returnDate, setReturnDate] = useState<Date>(new Date("2022-12-18"));
   const [roundTrip, setRoundTrip] = useState<boolean>(true);
   const [departureLocation, setDepartureLocation] = useState<string>("");
   const [arrivalDestination, setArrivalDestination] = useState<string>("");
@@ -61,7 +60,13 @@ const SearchForm = (props: IMyProps) => {
             name="departureLocation"
             id="departureLocation"
             onChange={(e) => handleDepartureLocation(e)}
+            list="locations"
           />
+          <datalist id="locations">
+            <option>Amsterdam</option>
+            <option>Oslo</option>
+            <option>Stockholm</option>
+          </datalist>
         </div>
         <div className="searchForm_locations-2">
           <label htmlFor="arrivalDestination">To: </label>
@@ -70,7 +75,13 @@ const SearchForm = (props: IMyProps) => {
             name="arrivalDestination"
             id="arrivalDestination"
             onChange={(e) => handleArrivalDestination(e)}
+            list="locations"
           />
+          <datalist id="locations">
+            <option>Amsterdam</option>
+            <option>Oslo</option>
+            <option>Stockholm</option>
+          </datalist>
         </div>
       </div>
       <div className="searchForm_dates">

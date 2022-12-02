@@ -3,6 +3,7 @@ import * as React from "react";
 import Alert from "@mui/material/Alert";
 import { useRouter } from "next/router";
 import ItineraryCard from "./ItineraryCard";
+import Button from "@mui/material/Button";
 
 type flight = {
   flight_id: string;
@@ -94,20 +95,38 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
   return (
     <>
       {flights.length == 1 ? (
-        <div style={{ border: "2px solid red" }}>
-          <h1>Your flight: One Way</h1>
+        <div
+          className="yourFlight"
+          style={{
+            border: "0.2rem solid black",
+            borderRadius: "1.5rem",
+            padding: "1rem",
+            width: "35%",
+            textAlign: "center",
+            minWidth: "550px",
+          }}
+        >
+          <h1 style={{ textAlign: "center" }}>Your flight: One Way</h1>
           <hr />
           <br />
           <div
-            className="selectedFlights"
             style={{
-              border: "2px solid black",
               padding: "1rem",
               display: "flex",
+              justifyContent: "space-around",
+              width: "100%",
             }}
           >
             {props.outbound[0] ? (
-              <div style={{ border: "2px solid black" }}>
+              <div
+                className="cardHolders"
+                style={{
+                  border: "0.2rem solid black",
+                  borderRadius: "1.5rem",
+                  padding: "1rem",
+                  width: "35%",
+                }}
+              >
                 <p>
                   {props.outbound[0].departureLocation +
                     " - " +
@@ -124,13 +143,20 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                 </button>
               </div>
             ) : (
-              <div style={{ border: "2px solid black" }}>
+              <div
+                style={{
+                  border: "0.2rem solid black",
+                  borderRadius: "1.5rem",
+                  padding: "1rem",
+                  width: "35%",
+                }}
+              >
                 <p>AWAITING OUTBOUND CHOICE</p>
               </div>
             )}
           </div>
-
-          <button
+          <Button
+            variant="contained"
             onClick={() => {
               router.push({
                 pathname:
@@ -153,25 +179,44 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                 },
               });
             }}
+            style={{ backgroundColor: "green" }}
+            disabled={!props.outbound[0]}
           >
             Book Trip
-          </button>
+          </Button>
         </div>
       ) : (
-        <div style={{ border: "2px solid red" }}>
+        <div
+          style={{
+            border: "0.2rem solid black",
+            borderRadius: "1.5rem",
+            padding: "1rem",
+            width: "35%",
+            textAlign: "center",
+            minWidth: "550px",
+          }}
+        >
           <h1>Your flight: Round Trip</h1>
           <hr />
           <br />
           <div
             className="selectedFlights"
             style={{
-              border: "2px solid black",
               padding: "1rem",
               display: "flex",
+              justifyContent: "space-around",
+              width: "100%",
             }}
           >
             {props.outbound[0] ? (
-              <div style={{ border: "2px solid black" }}>
+              <div
+                style={{
+                  border: "0.2rem solid black",
+                  borderRadius: "1.5rem",
+                  padding: "1rem",
+                  width: "35%",
+                }}
+              >
                 <p>
                   {props.outbound[0].departureLocation +
                     " - " +
@@ -188,12 +233,26 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                 </button>
               </div>
             ) : (
-              <div style={{ border: "2px solid black" }}>
+              <div
+                style={{
+                  border: "0.2rem solid black",
+                  borderRadius: "1.5rem",
+                  padding: "1rem",
+                  width: "35%",
+                }}
+              >
                 <p>AWAITING OUTBOUND CHOICE</p>
               </div>
             )}
             {props.returnF[0] ? (
-              <div style={{ border: "2px solid black" }}>
+              <div
+                style={{
+                  border: "0.2rem solid black",
+                  borderRadius: "1.5rem",
+                  padding: "1rem",
+                  width: "35%",
+                }}
+              >
                 <p>
                   {props.returnF[0].departureLocation +
                     " - " +
@@ -210,13 +269,21 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                 </button>
               </div>
             ) : (
-              <div style={{ border: "2px solid black" }}>
+              <div
+                style={{
+                  border: "0.2rem solid black",
+                  borderRadius: "1.5rem",
+                  padding: "1rem",
+                  width: "35%",
+                }}
+              >
                 <p>AWAITING RETURN CHOICE</p>
               </div>
             )}
           </div>
 
-          <button
+          <Button
+            variant="contained"
             onClick={() => {
               router.push({
                 pathname:
@@ -247,9 +314,11 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
                 },
               });
             }}
+            style={{ backgroundColor: "green" }}
+            disabled={!props.outbound[0] || !props.returnF[0]}
           >
             Book Trip
-          </button>
+          </Button>
         </div>
       )}
       <br />
@@ -259,7 +328,7 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
           display: "flex",
           flexDirection: "row",
           width: "100%",
-          maxWidth: "(713/16)rem",
+          maxWidth: "1426px",
           justifyContent: "space-around",
         }}
       >
