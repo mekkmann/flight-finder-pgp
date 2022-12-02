@@ -269,6 +269,7 @@ public class FlightsController : ControllerBase
             }
             OneWayFlightDTO returnFlight = new(flightId2, departureDest2, arrivalDest2, itineraries2);
             List<OneWayFlightDTO> flightList = new() { outbound, returnFlight };
+
             return Ok(flightList);
         }
 
