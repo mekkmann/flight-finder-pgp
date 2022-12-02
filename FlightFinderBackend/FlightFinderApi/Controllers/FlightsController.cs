@@ -269,7 +269,7 @@ public class FlightsController : ControllerBase
             }
             OneWayFlightDTO returnFlight = new(flightId2, departureDest2, arrivalDest2, itineraries2);
             List<OneWayFlightDTO> flightList = new() { outbound, returnFlight };
-
+            Helpers.Sleep(3000);
             return Ok(flightList);
         }
 
@@ -283,9 +283,13 @@ public class FlightsController : ControllerBase
 
 }
 
-// HELPER METHODS
+// HELPER METHODS CLASS
 public static class Helpers
 {
+    public static void Sleep(int milliseconds)
+    {
+        System.Threading.Thread.Sleep(3000);
+    }
     public static void WriteToFile(string jsonString, string path)
     {
         File.WriteAllText(path, jsonString);
