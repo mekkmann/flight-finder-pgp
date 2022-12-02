@@ -12,17 +12,11 @@ export default function Home() {
   const [modal, setModal] = useState<boolean>(false);
   const [lastCheck, setLastCheck] = useState<boolean>(false);
   const [postSuccess, setPostSuccess] = useState<boolean>(false);
-
-  const postUrl = "https://localhost:7283/flights/book/";
-
-  useEffect(() => {
-    if (lastCheck) {
-      console.log("posting to db");
-    }
-  }, [lastCheck]);
+  const [waiting, setWaiting] = useState<boolean>(true);
+  const [confirmationEmail, setConfirmationEmail] = useState<string>("");
 
   const router = useRouter();
-  const {
+  let {
     flight_id1,
     departureDate1,
     departureLocation1,
@@ -36,6 +30,73 @@ export default function Home() {
     amountOfPassengers,
     totalPrice,
   } = router.query;
+  useEffect(() => {
+    // if (flight_id1 == undefined) flight_id1 = "";
+    // if (departureDate1 == undefined) departureDate1 = "";
+    // // if (flight_id2 == undefined) flight_id2 = "";
+    // if (departureDate2 == undefined) departureDate2 = "";
+    // if (amountOfPassengers == undefined) amountOfPassengers = "";
+    if (lastCheck) {
+      console.log("posting to db");
+      if (flight_id1 && !flight_id2) bookFlight(postUrl1);
+      if (flight_id1 && flight_id2) bookFlight(postUrl2);
+    }
+  }, [lastCheck]);
+
+  const postUrl1 =
+    "https://localhost:7283/flights/book?" +
+    "flightId1=" +
+    flight_id1 +
+    "&departureDate1=" +
+    departureDate1 +
+    "&recipientEmail=" +
+    "alex.p.liljekvist@gmail.com" +
+    "&amountOfPassengers=" +
+    amountOfPassengers;
+
+  const postUrl2 =
+    "https://localhost:7283/flights/book?" +
+    "flightId1=" +
+    flight_id1 +
+    "&departureDate1=" +
+    departureDate1 +
+    "&flightId2=" +
+    flight_id2 +
+    "&departureDate2=" +
+    departureDate2 +
+    "&recipientEmail=" +
+    "alex.p.liljekvist@gmail.com" +
+    "&amountOfPassengers=" +
+    amountOfPassengers;
+  // string? flightId1,
+  // DateTime? departureDate1,
+  // string? flightId2,
+  // DateTime? departureDate2,
+  // string? recipientEmail,
+  // int amountOfPassengers = 1
+  const bookFlight = (url: string) => {
+    fetch(url, {
+      method: "POST",
+      mode: "cors",
+      // body: JSON.stringify({
+      //   flightId1: flight_id1,
+      //   departureDate1: departureDate1,
+      //   flightId2: flight_id2,
+      //   departureDate2: departureDate2,
+      //   recipientEmail: confirmationEmail,
+      //   amountOfPassengers: amountOfPassengers,
+      // }),
+    })
+      .then((res) => {
+        setWaiting(true);
+        if (res.status == 200) {
+          setPostSuccess(true);
+          setWaiting(false);
+        }
+      })
+      .catch((e) => console.log(e.message));
+  };
+
   const handleModal = () => {
     setModal(!modal);
   };
@@ -62,6 +123,7 @@ export default function Home() {
             openModal={modal}
             handleModal={handleModal}
             postSuccess={postSuccess}
+            waiting={waiting}
           />
           <br />
           <hr style={{ width: "70vw" }} />
@@ -127,6 +189,7 @@ export default function Home() {
             openModal={modal}
             handleModal={handleModal}
             postSuccess={postSuccess}
+            waiting={waiting}
           />
           <br />
           <hr style={{ width: "70vw" }} />
@@ -147,6 +210,24 @@ export default function Home() {
             </li>
             <li>Passengers: {amountOfPassengers}</li>
             <li>Flight ID: {flight_id1}</li>
+          </ul>
+          <br />
+          <ul>
+            <li>
+              Departure from: {departureLocation2 + ", "}
+              {departureDate2?.toString().split("T")[0]} at{" "}
+              {departureDate2?.toString().split("T")[1]}
+            </li>
+            <li>
+              Arrival in:{" "}
+              {arrivalLocation2 +
+                ", " +
+                arrivalDate2?.toString().split("T")[0] +
+                " at " +
+                arrivalDate2?.toString().split("T")[1]}
+            </li>
+            <li>Passengers: {amountOfPassengers}</li>
+            <li>Flight ID: {flight_id2}</li>
           </ul>
           <br />
           <p>Total: {totalPrice} SEK</p>

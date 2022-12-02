@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using FlightFinderApi.Models;
 using FlightFinderApi.Models.DTO;
-using Newtonsoft.Json.Linq;
 using System.Text.Json;
-using System.IO;
 using System.Net.Mail;
 using System.Net;
 
@@ -15,21 +13,28 @@ public class FlightsController : ControllerBase
 
     // "post to database" aka rewrite json
     [HttpPost("/flights/book")]
-
     public async Task<IActionResult> BookFlight(
         string? flightId1,
-        string? departureDate1,
+        DateTime? departureDate1,
         string? flightId2,
-        string? departureDate2,
+        DateTime? departureDate2,
         string? recipientEmail,
         int amountOfPassengers = 1
         )
     {
+        Console.WriteLine(flightId1);
+        Console.WriteLine(flightId2);
         List<Flight> updatedFlights = new();
-        string jsonToWrite;
+        string jsonToWrite = "";
 
         using (StreamReader r = new StreamReader("Data\\data.json"))
         {
+            Console.WriteLine("id1: " + flightId1);
+            Console.WriteLine("depdate1: " + departureDate1);
+            Console.WriteLine("id2: " + flightId2);
+            Console.WriteLine("depdate2: " + departureDate2);
+            Console.WriteLine("recEmail: " + recipientEmail);
+            Console.WriteLine("#pass: " + amountOfPassengers);
             var json = await r.ReadToEndAsync();
 
             if (string.IsNullOrWhiteSpace(json))
@@ -38,78 +43,97 @@ public class FlightsController : ControllerBase
             }
             var deserJson = JsonSerializer.Deserialize<List<Flight>>(json);
 
-            if (deserJson.Count == 0) return StatusCode(500); // internal server error
+            // if (deserJson.Count == 0) return StatusCode(500); // internal server error
+            // for oneway
+            if (!string.IsNullOrWhiteSpace(flightId1) && string.IsNullOrWhiteSpace(flightId2))
+            {
+                Console.WriteLine("One way!");
 
-            var flightsToUpdate1 = deserJson.Where(x => x.FlightId == flightId1).ToList();
-            var flightsToNotUpdate1 = deserJson.Where(x => x.FlightId != flightId1 && x.FlightId != flightId2).ToList();
+                var flightsToUpdate1 = deserJson.Where(x => x.FlightId == flightId1).ToList();
+                var flightsToNotUpdate1 = deserJson.Where(x => x.FlightId != flightId1).ToList();
 
-            var flightsToUpdate2 = deserJson.Where(x => x.FlightId == flightId2).ToList();
-            // var flightsToNotUpdate2 = deserJson.Where(x => x.FlightId != flightId2).ToList(); // // previous
+                var itinerariesToUpdate1 = flightsToUpdate1.SelectMany(f => f.Itineraries).Where(i => i.DepartureAt.ToString() == departureDate1.ToString()).ToList();
+                var itinerariesToNotUpdate1 = flightsToUpdate1.SelectMany(f => f.Itineraries).Where(i => i.DepartureAt.ToString() != departureDate1.ToString()).ToList();
+                Console.WriteLine(itinerariesToUpdate1[0].AvailableSeats);
+                itinerariesToUpdate1[0].AvailableSeats -= amountOfPassengers;
 
-            var itinerariesToUpdate1 = flightsToUpdate1.SelectMany(f => f.Itineraries).Where(i => i.DepartureAt.ToString() == departureDate1).ToList();
-            var itinerariesToNotUpdate1 = flightsToUpdate1.SelectMany(f => f.Itineraries).Where(i => i.DepartureAt.ToString() != departureDate1).ToList();
+                var updatedItinerary1 = itinerariesToUpdate1[0];
 
-            var itinerariesToUpdate2 = flightsToUpdate2.SelectMany(f => f.Itineraries).Where(i => i.DepartureAt.ToString() == departureDate2).ToList();
-            var itinerariesToNotUpdate2 = flightsToUpdate2.SelectMany(f => f.Itineraries).Where(i => i.DepartureAt.ToString() != departureDate2).ToList();
+                List<Itinerary> togetherAgain1 = itinerariesToNotUpdate1.Concat(itinerariesToUpdate1).ToList();
+                flightsToUpdate1[0].Itineraries = togetherAgain1;
+                var flightsTogetherAgain1 = flightsToNotUpdate1.Concat(flightsToUpdate1).ToList();
+                jsonToWrite = JsonSerializer.Serialize(flightsTogetherAgain1);
+            }
+            // for round trip
+            if (!string.IsNullOrWhiteSpace(flightId1) && !string.IsNullOrWhiteSpace(flightId2))
+            {
+                Console.WriteLine("Round trip!");
+                var flightsToUpdate1 = deserJson.Where(x => x.FlightId == flightId1).ToList();
+                var flightsToNotUpdate1 = deserJson.Where(x => x.FlightId != flightId1 && x.FlightId != flightId2).ToList();
 
-            var listOfItinerariesListToUpdate = flightsToUpdate1.Select(f => f.Itineraries).ToList();
-            Console.WriteLine("total amount of itineraries1: " + (itinerariesToNotUpdate1.Count + itinerariesToUpdate1.Count));
-            Console.WriteLine("total amount of itineraries1 to not update: " + (itinerariesToNotUpdate1.Count));
-            Console.WriteLine("total amount of itineraries1 to update: " + (itinerariesToUpdate1.Count));
-            Console.WriteLine("itineraries1: " + (itinerariesToUpdate1[0].DepartureAt));
-            Console.WriteLine("---------------------------------------------------------");
-            Console.WriteLine("total amount of itineraries2: " + (itinerariesToNotUpdate2.Count + itinerariesToUpdate2.Count));
-            Console.WriteLine("total amount of itineraries2 to not update: " + (itinerariesToNotUpdate2.Count));
-            Console.WriteLine("total amount of itineraries2 to update: " + (itinerariesToUpdate2.Count));
-            Console.WriteLine("itineraries2: " + (itinerariesToUpdate2[0].DepartureAt));
-            Console.WriteLine("---------------------------------------------------------");
+                var flightsToUpdate2 = deserJson.Where(x => x.FlightId == flightId2).ToList();
+                // var flightsToNotUpdate2 = deserJson.Where(x => x.FlightId != flightId2).ToList(); // // previous
+
+                var itinerariesToUpdate1 = flightsToUpdate1.SelectMany(f => f.Itineraries).Where(i => i.DepartureAt.ToString() == departureDate1.ToString()).ToList();
+                var itinerariesToNotUpdate1 = flightsToUpdate1.SelectMany(f => f.Itineraries).Where(i => i.DepartureAt.ToString() != departureDate1.ToString()).ToList();
+
+                var itinerariesToUpdate2 = flightsToUpdate2.SelectMany(f => f.Itineraries).Where(i => i.DepartureAt.ToString() == departureDate2.ToString()).ToList();
+                var itinerariesToNotUpdate2 = flightsToUpdate2.SelectMany(f => f.Itineraries).Where(i => i.DepartureAt.ToString() != departureDate2.ToString()).ToList();
+
+                var listOfItinerariesListToUpdate = flightsToUpdate1.Select(f => f.Itineraries).ToList();
+                Console.WriteLine("total amount of itineraries1: " + (itinerariesToNotUpdate1.Count + itinerariesToUpdate1.Count));
+                Console.WriteLine("total amount of itineraries1 to not update: " + (itinerariesToNotUpdate1.Count));
+                Console.WriteLine("total amount of itineraries1 to update: " + (itinerariesToUpdate1.Count));
+                Console.WriteLine("itineraries1: " + (itinerariesToUpdate1[0].DepartureAt));
+                Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine("total amount of itineraries2: " + (itinerariesToNotUpdate2.Count + itinerariesToUpdate2.Count));
+                Console.WriteLine("total amount of itineraries2 to not update: " + (itinerariesToNotUpdate2.Count));
+                Console.WriteLine("total amount of itineraries2 to update: " + (itinerariesToUpdate2.Count));
+                Console.WriteLine("itineraries2: " + (itinerariesToUpdate2[0].DepartureAt));
+                Console.WriteLine("---------------------------------------------------------");
 
 
-            // THIS WORKS FINE
-            itinerariesToUpdate1.ForEach(i => Console.WriteLine("base: " + i.AvailableSeats));
-            itinerariesToUpdate2.ForEach(i => Console.WriteLine("base: " + i.AvailableSeats));
+                // THIS WORKS FINE
+                itinerariesToUpdate1.ForEach(i => Console.WriteLine("base: " + i.AvailableSeats));
+                itinerariesToUpdate2.ForEach(i => Console.WriteLine("base: " + i.AvailableSeats));
 
-            // update availableSeats in itineraries 
-            itinerariesToUpdate1[0].AvailableSeats -= amountOfPassengers;
-            itinerariesToUpdate2[0].AvailableSeats -= amountOfPassengers;
+                // update availableSeats in itineraries 
+                itinerariesToUpdate1[0].AvailableSeats -= amountOfPassengers;
+                itinerariesToUpdate2[0].AvailableSeats -= amountOfPassengers;
 
 
-            var updatedItinerary1 = itinerariesToUpdate1[0];
-            var updatedItinerary2 = itinerariesToUpdate2[0];
+                var updatedItinerary1 = itinerariesToUpdate1[0];
+                var updatedItinerary2 = itinerariesToUpdate2[0];
 
-            Console.WriteLine("updated: " + itinerariesToUpdate1[0].AvailableSeats);
-            Console.WriteLine("updated: " + itinerariesToUpdate2[0].AvailableSeats);
-            Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine("updated: " + itinerariesToUpdate1[0].AvailableSeats);
+                Console.WriteLine("updated: " + itinerariesToUpdate2[0].AvailableSeats);
+                Console.WriteLine("---------------------------------------------------------");
 
-            List<Itinerary> togetherAgain1 = itinerariesToNotUpdate1.Concat(itinerariesToUpdate1).ToList();
-            List<Itinerary> togetherAgain2 = itinerariesToNotUpdate2.Concat(itinerariesToUpdate2).ToList();
+                List<Itinerary> togetherAgain1 = itinerariesToNotUpdate1.Concat(itinerariesToUpdate1).ToList();
+                List<Itinerary> togetherAgain2 = itinerariesToNotUpdate2.Concat(itinerariesToUpdate2).ToList();
 
-            Console.WriteLine("total togetheragain1 after join: " + togetherAgain1.Count);
-            Console.WriteLine("total togetheragain2 after join: " + togetherAgain2.Count);
-            Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine("total togetheragain1 after join: " + togetherAgain1.Count);
+                Console.WriteLine("total togetheragain2 after join: " + togetherAgain2.Count);
+                Console.WriteLine("---------------------------------------------------------");
 
-            flightsToUpdate1[0].Itineraries = togetherAgain1;
-            flightsToUpdate2[0].Itineraries = togetherAgain2;
+                flightsToUpdate1[0].Itineraries = togetherAgain1;
+                flightsToUpdate2[0].Itineraries = togetherAgain2;
 
-            var flightsTogetherAgain1 = flightsToNotUpdate1.Concat(flightsToUpdate1).ToList();
-            // var flightsTogetherAgain2 = flightsToNotUpdate2.Concat(flightsToUpdate2).ToList(); // //previous
-            var flightsTogetherAgain2 = flightsTogetherAgain1.Concat(flightsToUpdate2).ToList();
+                var flightsTogetherAgain1 = flightsToNotUpdate1.Concat(flightsToUpdate1).ToList();
+                // var flightsTogetherAgain2 = flightsToNotUpdate2.Concat(flightsToUpdate2).ToList(); // //previous
+                var flightsTogetherAgain2 = flightsTogetherAgain1.Concat(flightsToUpdate2).ToList();
 
-            var allFlightsTogetherAtLast = flightsTogetherAgain1.Concat(flightsTogetherAgain2);
-            // jsonToWrite = JsonSerializer.Serialize(allFlightsTogetherAtLast);   // //previous
-            jsonToWrite = JsonSerializer.Serialize(flightsTogetherAgain2);
+                var allFlightsTogetherAtLast = flightsTogetherAgain1.Concat(flightsTogetherAgain2);
+                // jsonToWrite = JsonSerializer.Serialize(allFlightsTogetherAtLast);   // //previous
+                jsonToWrite = JsonSerializer.Serialize(flightsTogetherAgain2);
 
-            Console.WriteLine("VERDICT: IM GOD");
+                Console.WriteLine("VERDICT: IM GOD");
+            }
+
         }
 
         Helpers.WriteToFile(jsonToWrite, "Data\\data.json");
-        // var smtpClient = new SmtpClient("smtp.gmail.com")
-        // {
-        //     Port = 587,
-        //     Credentials = new NetworkCredential("alex.p.liljekvist@gmail.com", "2Catpepgos3!"),
-        //     EnableSsl = true
-        // };
-        // smtpClient.Send("alex.p.liljekvist@gmail.com", "alex.p.liljekvist@gmail.com", "test", "testtest");
+
         if (!string.IsNullOrWhiteSpace(recipientEmail))
         {
             SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com", 587);

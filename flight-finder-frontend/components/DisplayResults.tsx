@@ -54,8 +54,6 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
   }
 
   useEffect(() => {
-    console.log("url-length: ", props.urlToFetch.length);
-    console.log("url: ", props.urlToFetch);
     if (props.urlToFetch != "") {
       setLoading(true);
       props.setOutbound([]);

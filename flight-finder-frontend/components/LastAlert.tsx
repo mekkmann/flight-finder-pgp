@@ -12,6 +12,7 @@ interface IMyProps {
   lastCheck: boolean;
   openModal: boolean;
   postSuccess: boolean;
+  waiting: boolean;
 }
 
 const LastAlert: React.FC<IMyProps> = (props: IMyProps) => {
@@ -57,7 +58,7 @@ const LastAlert: React.FC<IMyProps> = (props: IMyProps) => {
 
       {props.lastCheck ? (
         <Stack sx={{ width: "100%", marginTop: "1rem" }} spacing={2}>
-          {props.postSuccess ? (
+          {props.waiting ? null : props.postSuccess ? (
             <Alert severity="success">
               Your Flight is successfully booked!
             </Alert>
