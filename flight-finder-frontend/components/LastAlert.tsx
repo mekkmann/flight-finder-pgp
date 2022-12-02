@@ -19,6 +19,7 @@ const LastAlert: React.FC<IMyProps> = (props: IMyProps) => {
   const handleLastCheck = () => {
     props.setLastCheck(true);
     props.handleModal(!props.openModal);
+    window.scroll(0, 0);
   };
 
   return (

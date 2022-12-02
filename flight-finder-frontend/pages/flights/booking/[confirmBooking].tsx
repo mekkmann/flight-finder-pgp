@@ -118,7 +118,19 @@ export default function Home() {
           <br />
           <hr style={{ width: "70vw" }} />
           <br />
-          <div style={{ border: "0.2rem solid black" }}>
+          <h2>Flights</h2>
+          <br />
+          <div
+            style={{
+              border: "0.2rem solid black",
+              borderRadius: "1.5rem",
+              width: "80%",
+              padding: "1rem",
+              lineHeight: "2",
+              textAlign: "center",
+              fontWeight: "600",
+            }}
+          >
             <p>
               Departure from: {departureLocation1 + ", "}
               {departureDate1?.toString().split("T")[0]} at{" "}
@@ -137,21 +149,21 @@ export default function Home() {
             <p>Flight ID: {flight_id1}</p>
           </div>
           <br />
-          <p>Total: {totalPrice} SEK</p>
+          <p style={{ fontWeight: "600" }}>Total: {totalPrice} SEK</p>
           <br />
           <hr style={{ width: "70vw" }} />
           <br />
           {passengerList.map((passenger) => (
             <PassengerCard passenger={passenger} />
           ))}
-
-          <button
+          <Button
+            variant="contained"
             onClick={handleModal}
-            style={{ width: "20vw", marginBottom: "1rem" }}
+            style={{ width: "20vw", marginBottom: "1rem", background: "green" }}
             disabled={lastCheck}
           >
             Confirm Booking
-          </button>
+          </Button>
         </main>
 
         <footer className={styles.footer}></footer>
