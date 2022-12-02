@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../helpers/Context";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Button } from "@mui/material";
 
 // TODO: FIGURE OUT HOW TO DO LABELS WHEN MULTIPLE FORMS ON THE SAME PAGE
 type passenger = {
@@ -41,7 +42,6 @@ const PassengerForm: React.FC<IMyProps> = (props: IMyProps) => {
 
   // sets isAdult based on dob
   useEffect(() => {
-    console.log(dob.toISOString().split("T")[0].split("-")[0]);
     if (Number(dob.toISOString().split("T")[0].split("-")[0]) <= 2010) {
       setIsAdult(true);
     } else {
@@ -102,7 +102,9 @@ const PassengerForm: React.FC<IMyProps> = (props: IMyProps) => {
     <div
       className="passengerForm"
       style={{
-        border: "2px solid black",
+        border: "0.2rem solid black",
+        borderRadius: "1.5rem",
+        backgroundColor: "orchid",
         marginBottom: "1rem",
         display: "flex",
         flexDirection: "column",
@@ -113,14 +115,11 @@ const PassengerForm: React.FC<IMyProps> = (props: IMyProps) => {
     >
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h3>{isAdult ? "Passenger" : "Passenger (Child)"}</h3>
-        <button onClick={() => setOpen(!open)}>
+        <Button variant="contained" onClick={() => setOpen(!open)}>
           {open ? "Close" : "Open"}
-        </button>
+        </Button>
       </div>
-
-      {/* TODO: REMOVE BUTTONS BELOW */}
-      <button onClick={() => console.log(passengerList)}>passengerList</button>
-      <button onClick={() => setPassengerList([])}>reset passengerList</button>
+      <br />
 
       {open ? (
         <>
@@ -128,13 +127,13 @@ const PassengerForm: React.FC<IMyProps> = (props: IMyProps) => {
             className="passengerForm_names"
             style={{ display: "flex", flexDirection: "column" }}
           >
-            <label>First Name:</label>
+            <label style={{ fontWeight: "600" }}>First Name:</label>
             <input
               type="text"
               value={firstName}
               onChange={(e) => handleFirstName(e)}
             />
-            <label>Last Name:</label>
+            <label style={{ fontWeight: "600" }}>Last Name:</label>
             <input
               type="text"
               value={lastName}
@@ -150,7 +149,7 @@ const PassengerForm: React.FC<IMyProps> = (props: IMyProps) => {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <label>Date of Birth:</label>
+              <label style={{ fontWeight: "600" }}>Date of Birth:</label>
               <DatePicker
                 selected={dob}
                 onChange={(date: Date) => setDob(date)}
@@ -160,13 +159,13 @@ const PassengerForm: React.FC<IMyProps> = (props: IMyProps) => {
               className="passengerForm_contact"
               style={{ display: "flex", flexDirection: "column" }}
             >
-              <label>Email:</label>
+              <label style={{ fontWeight: "600" }}>Email:</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => handleEmail(e)}
               />
-              <label>Phone:</label>
+              <label style={{ fontWeight: "600" }}>Phone:</label>
               <input
                 type="tel"
                 value={phone}
@@ -175,9 +174,14 @@ const PassengerForm: React.FC<IMyProps> = (props: IMyProps) => {
             </div>
           </div>
           <br />
-          <button onClick={() => confirmPassenger()} disabled={confirmed}>
+          <Button
+            variant="contained"
+            onClick={() => confirmPassenger()}
+            disabled={confirmed}
+          >
+            {" "}
             Confirm Passenger
-          </button>
+          </Button>
         </>
       ) : null}
     </div>

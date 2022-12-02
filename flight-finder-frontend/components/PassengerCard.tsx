@@ -15,20 +15,27 @@ interface IMyProps {
 const PassengerCard = (props: IMyProps) => {
   return (
     <div
-      style={{ width: "70vw", border: "2px solid black", marginBottom: "1rem" }}
+      style={{
+        width: "70vw",
+        border: "0.2rem solid black",
+        marginBottom: "1rem",
+        borderRadius: "1.5rem",
+        padding: "1rem",
+      }}
     >
       <h3>{props.passenger.isAdult ? "Passenger" : "Passenger (Child)"}</h3>
-      <p>
+      <br />
+      <p style={{ fontWeight: "600" }}>
         {"Full Name: " +
           props.passenger.firstName +
           " " +
           props.passenger.lastName}
       </p>
-      <p>
+      <p style={{ fontWeight: "600" }}>
         {"Date of Birth: " + props.passenger.dob.toISOString().split("T")[0]}
       </p>
-      <p>{"Email: " + props.passenger.email}</p>
-      <p>{"Phone: " + props.passenger.phone}</p>
+      <p style={{ fontWeight: "600" }}>{"Email: " + props.passenger.email}</p>
+      <p style={{ fontWeight: "600" }}>{"Phone: " + props.passenger.phone}</p>
     </div>
   );
 };

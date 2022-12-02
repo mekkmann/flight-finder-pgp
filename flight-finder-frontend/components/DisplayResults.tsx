@@ -334,6 +334,7 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
       >
         {flights.map((flight, idx) => (
           <div
+            key={idx}
             className="itineraryCards-list"
             style={{
               border: "0.225rem solid #131921",
@@ -344,11 +345,7 @@ const DisplayOneWayResults: React.FC<IMyProps> = (props: IMyProps) => {
               backgroundColor: "orchid",
             }}
           >
-            <h2
-              key={
-                flight.flight_id + idx + flight.itineraries[0].avaliableSeats
-              }
-            >
+            <h2 key={flight.flight_id + idx}>
               {idx == 1 ? "Return" : "Outbound"} from:{" "}
               {flight.departureDestination} | Arrival in:{" "}
               {flight.arrivalDestination}

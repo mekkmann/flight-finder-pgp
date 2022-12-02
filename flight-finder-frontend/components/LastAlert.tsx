@@ -36,7 +36,8 @@ const LastAlert: React.FC<IMyProps> = (props: IMyProps) => {
             transform: "translate(-50%, -50%)",
             width: 400,
             backgroundColor: "whitesmoke",
-            border: "2px solid #000",
+            border: "0.2rem solid black",
+            borderRadius: "1.5rem",
             boxShadow: "24",
             display: "flex",
             flexDirection: "column",
@@ -47,12 +48,17 @@ const LastAlert: React.FC<IMyProps> = (props: IMyProps) => {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Click "Book" to finalize booking
           </Typography>
-          <button
+          <Button
+            variant="contained"
             onClick={handleLastCheck}
-            style={{ padding: "0.3125rem", marginTop: "1rem" }}
+            style={{
+              padding: "0.3125rem",
+              marginTop: "1rem",
+              backgroundColor: "green",
+            }}
           >
             Book
-          </button>
+          </Button>
         </Box>
       </Modal>
 

@@ -6,10 +6,10 @@ import Navbar from "../../../components/Navbar";
 import { Context } from "../../../helpers/Context";
 import PassengerCard from "../../../components/PassengerCard";
 import LastAlert from "../../../components/LastAlert";
-import { Button, duration } from "@mui/material";
+import { Button } from "@mui/material";
 
 export default function Home() {
-  const { passengerList, setPassengerList } = useContext(Context);
+  const { passengerList } = useContext(Context);
   const [modal, setModal] = useState<boolean>(false);
   const [lastCheck, setLastCheck] = useState<boolean>(false);
   const [postSuccess, setPostSuccess] = useState<boolean>(false);
@@ -41,7 +41,8 @@ export default function Home() {
   } = router.query;
   useEffect(() => {
     if (lastCheck) {
-      if (sendEmail) if (flight_id1 && !flight_id2) bookFlight(postUrl1);
+      if (sendEmail) setSendEmail(true);
+      if (flight_id1 && !flight_id2) bookFlight(postUrl1);
       if (flight_id1 && flight_id2) bookFlight(postUrl2);
     }
   }, [lastCheck]);
@@ -53,7 +54,7 @@ export default function Home() {
     "&departureDate1=" +
     departureDate1 +
     "&recipientEmail=" +
-    "alex.p.liljekvist@gmail.com" +
+    confirmationEmail +
     "&amountOfPassengers=" +
     amountOfPassengers;
 
@@ -117,24 +118,24 @@ export default function Home() {
           <br />
           <hr style={{ width: "70vw" }} />
           <br />
-          <ul>
-            <li>
+          <div style={{ border: "0.2rem solid black" }}>
+            <p>
               Departure from: {departureLocation1 + ", "}
               {departureDate1?.toString().split("T")[0]} at{" "}
               {departureDate1?.toString().split("T")[1]}
-            </li>
-            <li>
+            </p>
+            <p>
               Arrival in:{" "}
               {arrivalLocation1 +
                 ", " +
                 arrivalDate1?.toString().split("T")[0] +
                 " at " +
                 arrivalDate1?.toString().split("T")[1]}
-            </li>
-            <li>Duration: {duration1 + " hrs"}</li>
-            <li>Passengers: {amountOfPassengers}</li>
-            <li>Flight ID: {flight_id1}</li>
-          </ul>
+            </p>
+            <p>Duration: {duration1 + " hrs"}</p>
+            <p>Passengers: {amountOfPassengers}</p>
+            <p>Flight ID: {flight_id1}</p>
+          </div>
           <br />
           <p>Total: {totalPrice} SEK</p>
           <br />
@@ -184,56 +185,98 @@ export default function Home() {
           <br />
           <hr style={{ width: "70vw" }} />
           <br />
-          <ul>
-            <li>
+          <h2>Flights</h2>
+          <br />
+          <div
+            style={{
+              border: "0.2rem solid black",
+              borderRadius: "1.5rem",
+              width: "80%",
+              padding: "1rem",
+              lineHeight: "2",
+              textAlign: "center",
+            }}
+          >
+            <p style={{ fontWeight: "600" }}>
               Departure from: {departureLocation1 + ", "}
               {departureDate1?.toString().split("T")[0]} at{" "}
               {departureDate1?.toString().split("T")[1]}
-            </li>
-            <li>
+            </p>
+            <p style={{ fontWeight: "600" }}>
               Arrival in:{" "}
               {arrivalLocation1 +
                 ", " +
                 arrivalDate1?.toString().split("T")[0] +
                 " at " +
                 arrivalDate1?.toString().split("T")[1]}
-            </li>
-            <li>Duration: {duration1 + " hrs"}</li>
-            <li>Passengers: {amountOfPassengers}</li>
-            <li>Flight ID: {flight_id1}</li>
-          </ul>
+            </p>
+            <p style={{ fontWeight: "600" }}>Duration: {duration1 + " hrs"}</p>
+            <p style={{ fontWeight: "600" }}>
+              Passengers: {amountOfPassengers}
+            </p>
+            <p style={{ fontWeight: "600" }}>Flight ID: {flight_id1}</p>
+          </div>
           <br />
-          <ul>
-            <li>
+
+          <div
+            style={{
+              border: "0.2rem solid black",
+              borderRadius: "1.5rem",
+              width: "80%",
+              padding: "1rem",
+              textAlign: "center",
+              lineHeight: "2",
+            }}
+          >
+            <p style={{ fontWeight: "600" }}>
               Departure from: {departureLocation2 + ", "}
               {departureDate2?.toString().split("T")[0]} at{" "}
               {departureDate2?.toString().split("T")[1]}
-            </li>
-            <li>
+            </p>
+
+            <p style={{ fontWeight: "600" }}>
               Arrival in:{" "}
               {arrivalLocation2 +
                 ", " +
                 arrivalDate2?.toString().split("T")[0] +
                 " at " +
                 arrivalDate2?.toString().split("T")[1]}
-            </li>
-            <li>Duration: {duration2 + " hrs"}</li>
-            <li>Passengers: {amountOfPassengers}</li>
-            <li>Flight ID: {flight_id2}</li>
-          </ul>
+            </p>
+            <p style={{ fontWeight: "600" }}>Duration: {duration2 + " hrs"}</p>
+            <p style={{ fontWeight: "600" }}>
+              Passengers: {amountOfPassengers}
+            </p>
+            <p style={{ fontWeight: "600" }}>Flight ID: {flight_id2}</p>
+          </div>
           <br />
-          <p>Total: {totalPrice} SEK</p>
+          <p style={{ fontWeight: "600" }}>Total: {totalPrice} SEK</p>
           <br />
           <hr style={{ width: "70vw" }} />
+          <br />
+          <h2>Passengers</h2>
           <br />
           {passengerList.map((passenger) => (
             <PassengerCard passenger={passenger} />
           ))}
           <div
             className="confirmationEmail"
-            style={{ width: "50vw", border: "0.2rem solid black" }}
+            style={{
+              width: "50vw",
+              border: "0.2rem solid black",
+              padding: "1rem",
+              borderRadius: "1.5rem",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              backgroundColor: "orchid",
+            }}
           >
-            <label htmlFor="confirmationEmailInput">Confirmation Email:</label>
+            <label
+              htmlFor="confirmationEmailInput"
+              style={{ fontWeight: "600" }}
+            >
+              Email:
+            </label>
             <input
               type="email"
               id="confirmationEmailInput"
@@ -242,21 +285,33 @@ export default function Home() {
             <Button
               variant="contained"
               onClick={() => setSendEmail(!sendEmail)}
+              disabled={sendEmail}
+              style={{ minWidth: "55%", marginTop: "1rem" }}
             >
-              I want a Confirmation Email
+              {!sendEmail ? "I want a Confirmation Email" : "Perfect!"}
             </Button>
             {!sendEmail ? null : (
-              <p>You'll receive a confirmation shortly after booking</p>
+              <p>
+                If you filled in your email correctly, you'll receive a
+                confirmation shortly after booking
+              </p>
             )}
           </div>
 
-          <button
+          <Button
+            variant="contained"
             onClick={handleModal}
-            style={{ width: "20vw", marginBottom: "1rem" }}
+            style={{
+              width: "20vw",
+              marginBottom: "1rem",
+              backgroundColor: "green",
+              marginTop: "1rem",
+            }}
             disabled={lastCheck}
           >
+            {" "}
             Confirm Booking
-          </button>
+          </Button>
         </main>
 
         <footer className={styles.footer}></footer>

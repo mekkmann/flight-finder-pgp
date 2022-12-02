@@ -136,22 +136,30 @@ public class FlightsController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(recipientEmail))
         {
-            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com", 587);
-            SmtpServer.DeliveryMethod = SmtpDeliveryMethod.Network;
-            MailMessage email = new MailMessage();
-            // START
-            email.From = new MailAddress("alex.p.liljekvist@gmail.com");
-            email.To.Add(recipientEmail);
-            email.CC.Add("alex.p.liljekvist@gmail.com");
-            email.Subject = "FlightFinder Confirmation (PGP)";
-            email.Body = "Congratulations, your flight is booked! Now sit back, relax and grab yourself a beverage.";
-            //END
-            SmtpServer.Timeout = 5000;
-            SmtpServer.EnableSsl = true;
-            SmtpServer.UseDefaultCredentials = false;
-            SmtpServer.Credentials = new NetworkCredential("alex.p.liljekvist@gmail.com", "yabnnmarjsmqtahk");
-            SmtpServer.Send(email);
-            Console.WriteLine("Email Successfully Sent");
+            try
+            {
+
+                SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com", 587);
+                SmtpServer.DeliveryMethod = SmtpDeliveryMethod.Network;
+                MailMessage email = new MailMessage();
+                // START
+                email.From = new MailAddress("alex.p.liljekvist@gmail.com");
+                email.To.Add(recipientEmail);
+                email.CC.Add("alex.p.liljekvist@gmail.com");
+                email.Subject = "FlightFinder Confirmation (PGP)";
+                email.Body = "Congratulations, your flight is booked! Now sit back, relax and grab yourself a beverage.";
+                //END
+                SmtpServer.Timeout = 5000;
+                SmtpServer.EnableSsl = true;
+                SmtpServer.UseDefaultCredentials = false;
+                SmtpServer.Credentials = new NetworkCredential("alex.p.liljekvist@gmail.com", "yabnnmarjsmqtahk");
+                SmtpServer.Send(email);
+                Console.WriteLine("Email Successfully Sent");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         return Ok("posted");

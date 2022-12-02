@@ -5,14 +5,7 @@ import Navbar from "../../components/Navbar";
 import React, { useEffect, useState, useContext } from "react";
 import PassengerForm from "../../components/PassengerForm";
 import { Context } from "../../helpers/Context";
-
-type passenger = {
-  firstName: string;
-  lastName: string;
-  dob: Date;
-  email: string;
-  phone: number;
-};
+import { Button } from "@mui/material";
 
 export default function Home() {
   const { passengerList } = useContext(Context);
@@ -63,9 +56,6 @@ export default function Home() {
   useEffect(() => {
     getTotalPrice();
   }, [numOfAdults, numOfChildren]);
-  // useEffect(() => {
-  //   setPassengerList()
-  // }, []);
 
   const passengerForms = [...Array(Number(amountOfPassengers))];
   if (flight_id1 && flight_id2) {
@@ -97,7 +87,8 @@ export default function Home() {
             <div
               className="booking_Flights"
               style={{
-                border: "2px solid black",
+                border: "0.2rem solid black",
+                borderRadius: "1.5rem",
                 width: "33vw",
                 padding: "1rem",
               }}
@@ -123,7 +114,8 @@ export default function Home() {
             <div
               className="booking_Flights"
               style={{
-                border: "2px solid black",
+                border: "0.2rem solid black",
+                borderRadius: "1.5rem",
                 width: "33vw",
                 padding: "1rem",
               }}
@@ -157,7 +149,8 @@ export default function Home() {
           <h4>Adults: {numOfAdults}</h4>
           <h4>Children: {numOfChildren}</h4>
           <h4>Total: {totalPrice} SEK </h4>
-          <button
+          <Button
+            variant="contained"
             onClick={() => {
               router.push({
                 pathname: "/flights/booking/" + "confirm",
@@ -180,9 +173,10 @@ export default function Home() {
               });
             }}
             disabled={passengerForms.length != passengerList.length}
+            style={{ backgroundColor: "green", marginTop: "1rem" }}
           >
             Confirm Booking
-          </button>
+          </Button>
         </main>
 
         <footer className={styles.footer}></footer>
@@ -232,6 +226,7 @@ export default function Home() {
           <div>
             {passengerForms.map((_, index) => (
               <PassengerForm
+                key={index}
                 increaseChildren={increaseChildren}
                 increaseAdults={increaseAdults}
                 indexOfPassenger={index}
@@ -241,7 +236,8 @@ export default function Home() {
           <h4>Adults: {numOfAdults}</h4>
           <h4>Children: {numOfChildren}</h4>
           <h4>Total: {totalPrice} SEK </h4>
-          <button
+          <Button
+            variant="contained"
             onClick={() => {
               router.push({
                 pathname: "/flights/booking/" + "confirm",
@@ -258,9 +254,10 @@ export default function Home() {
               });
             }}
             disabled={passengerForms.length != passengerList.length}
+            style={{ backgroundColor: "green", marginTop: "1rem" }}
           >
             Confirm Booking
-          </button>
+          </Button>
         </main>
 
         <footer className={styles.footer}></footer>
