@@ -48,3 +48,4 @@ C:\Users\pontu\GitHubRepos\flight-finder-pgp\FlightFinderBackend\FlightFinderApi
 C:\Users\pontu\GitHubRepos\flight-finder-pgp\FlightFinderBackend\FlightFinderApi\bin\Debug\net6.0\runtimes\osx\native\libgrpc_csharp_ext.x86.dylib
 C:\Users\pontu\GitHubRepos\flight-finder-pgp\FlightFinderBackend\FlightFinderApi\bin\Debug\net6.0\runtimes\win\native\grpc_csharp_ext.x64.dll
 C:\Users\pontu\GitHubRepos\flight-finder-pgp\FlightFinderBackend\FlightFinderApi\bin\Debug\net6.0\runtimes\win\native\grpc_csharp_ext.x86.dll
+C:\Users\pontu\GitHubRepos\flight-finder-pgp\FlightFinderBackend\FlightFinderApi\bin\Debug\net6.0\Data\backup.json
