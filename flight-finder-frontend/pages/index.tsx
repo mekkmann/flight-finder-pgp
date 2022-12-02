@@ -63,7 +63,6 @@ export default function Home() {
           setAmountOfPassengersFunc={setAmountOfPassengers}
         />
         <br />
-        <hr style={{ width: "100%" }} />
         <br />
         <DisplayOneWayResults
           urlToFetch={urlToFetch}

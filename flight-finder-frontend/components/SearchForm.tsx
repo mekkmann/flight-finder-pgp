@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import * as React from "react";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -15,7 +18,6 @@ const SearchForm = (props: IMyProps) => {
   const [departureDate, setDepartureDate] = useState<Date>(new Date());
   const [returnDate, setReturnDate] = useState<Date>(phReturnDate);
   const [roundTrip, setRoundTrip] = useState<boolean>(true);
-  const [direct, setDirect] = useState<boolean>(false);
   const [departureLocation, setDepartureLocation] = useState<string>("");
   const [arrivalDestination, setArrivalDestination] = useState<string>("");
   const [numOfAdults, setNumOfAdults] = useState<number>(1);
@@ -44,9 +46,7 @@ const SearchForm = (props: IMyProps) => {
       "&departureDate=" +
       departureDate.toISOString().split("T")[0] +
       "&returnDate=" +
-      returnDate.toISOString().split("T")[0] +
-      "&direct=" +
-      direct;
+      returnDate.toISOString().split("T")[0];
 
     props.setUrlFunc(url);
     props.setAmountOfPassengersFunc(numOfAdults + numOfChildren);
@@ -99,46 +99,78 @@ const SearchForm = (props: IMyProps) => {
           </div>
         ) : null}
       </div>
+      {departureDate > returnDate && roundTrip ? (
+        <Alert severity="warning" style={{ marginTop: "1rem" }}>
+          Outbound Flight can't be after Return Flight
+          <br />
+          Please change dates.
+        </Alert>
+      ) : null}
       <div className="searchForm_misc">
         <div className="searchForm_misc-people">
-          <p>Adults: {numOfAdults}</p>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              setNumOfAdults(numOfAdults + 1);
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
             }}
           >
-            +
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (numOfAdults >= 2) {
-                setNumOfAdults(numOfAdults - 1);
-              }
+            <p>Adults: {numOfAdults}</p>
+            <div>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setNumOfAdults(numOfAdults + 1);
+                }}
+                style={{ width: "2rem", marginRight: "1rem" }}
+              >
+                +
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (numOfAdults >= 2) {
+                    setNumOfAdults(numOfAdults - 1);
+                  }
+                }}
+                style={{ width: "2rem" }}
+              >
+                -
+              </button>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
             }}
           >
-            -
-          </button>
-          <p>Children: {numOfChildren}</p>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              setNumOfChildren(numOfChildren + 1);
-            }}
-          >
-            +
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (numOfChildren >= 1) {
-                setNumOfChildren(numOfChildren - 1);
-              }
-            }}
-          >
-            -
-          </button>
+            <p>Children: {numOfChildren}</p>
+
+            <div>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setNumOfChildren(numOfChildren + 1);
+                }}
+                style={{ width: "2rem", marginRight: "1rem" }}
+              >
+                +
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (numOfChildren >= 1) {
+                    setNumOfChildren(numOfChildren - 1);
+                  }
+                }}
+                style={{ width: "2rem" }}
+              >
+                -
+              </button>
+            </div>
+          </div>
         </div>
         <div className="searchForm_misc-flight">
           <div className="searchForm_misc-flight-roundTrip">
@@ -159,23 +191,6 @@ const SearchForm = (props: IMyProps) => {
               className="searchForm_misc-flight-roundTrip-input"
             />
           </div>
-          <div className="searchForm_misc-flight-direct">
-            <label
-              htmlFor="direct"
-              className="searchForm_misc-flight-direct-label"
-            >
-              Direct:{" "}
-            </label>
-            <input
-              type="checkbox"
-              name="direct"
-              id="direct"
-              onChange={(e) => {
-                setDirect(!direct);
-              }}
-              className="searchForm_misc-flight-direct-input"
-            />
-          </div>
         </div>
       </div>
       <button
@@ -184,6 +199,7 @@ const SearchForm = (props: IMyProps) => {
           e.preventDefault();
           handleGetSearchUrl();
         }}
+        disabled={departureDate > returnDate && roundTrip}
       >
         Search Flights
       </button>

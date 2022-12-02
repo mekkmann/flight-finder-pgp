@@ -10,6 +10,8 @@
     color: #131921;
     font-size: normal;
     font-weight: 600;
+    border: 0.2rem solid #131921;
+    max-width: 713px;
 }
 
 
@@ -76,17 +78,14 @@
 .searchForm_misc-flight {
     flex-direction: column;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     width: 50%;
     margin-left: 0.5rem;
 
 }
-.searchForm_misc-flight-roundTrip, .searchForm_misc-flight-direct {
+.searchForm_misc-flight-roundTrip {
     display: flex;
-    justify-content: space-between;
-}
-.searchForm_misc-flight-direct {
-    margin-bottom: 2.25rem;
+    justify-content: space-around;
 }
 
 

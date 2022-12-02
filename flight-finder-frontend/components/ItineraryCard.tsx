@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import * as React from "react";
+import Button from "@mui/material/Button";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -54,7 +56,16 @@ const ItineraryCard = (props: IMyProps) => {
     <div
       className="itineraryCard"
       onClick={handleClick}
-      style={{ border: "2px solid black", marginTop: "10px", zIndex: "1" }}
+      style={{
+        border: "2px solid #131921",
+        marginTop: "10px",
+        zIndex: "1",
+        padding: "1rem",
+        borderRadius: "0.75rem",
+        borderBottomRightRadius: "0",
+        backgroundColor: "whitesmoke",
+        color: "#131921",
+      }}
     >
       <h3>{props.departureDestination + ": " + props.itinerary.depatureAt}</h3>
       <h3>{props.arrivalDestination + ": " + props.itinerary.arriveAt}</h3>
@@ -76,7 +87,9 @@ const ItineraryCard = (props: IMyProps) => {
               " " +
               props.itinerary.prices[0].currency}
           </h3>
-          <button
+          <Button
+            variant="contained"
+            style={{ marginTop: "1rem" }}
             onClick={(e) => {
               e.preventDefault();
               props.setDestination([
@@ -93,7 +106,7 @@ const ItineraryCard = (props: IMyProps) => {
             }}
           >
             Choose Flight
-          </button>
+          </Button>
         </div>
       )}
     </div>
